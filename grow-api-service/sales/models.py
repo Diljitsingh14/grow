@@ -22,7 +22,7 @@ class Order(models.Model):
     product = models.ForeignKey(
         "ProductAndService", on_delete=models.SET_NULL, null=True)
     payment = models.ForeignKey(
-        "Payments", on_delete=models.SET_NULL, null=True, related_name="sales_id")
+        "Payments", on_delete=models.SET_NULL, null=True, blank=True, related_name="sales_id")
 
 
 class Status(models.Model):
@@ -100,7 +100,7 @@ class Payments(models.Model):
     ]
 
     order = models.ForeignKey(
-        Order, on_delete=models.CASCADE)
+        Order, on_delete=models.SET_NULL, null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
