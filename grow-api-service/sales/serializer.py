@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, Discounts, ProductAndService
+from .models import Order, Discounts, ProductAndService, Status
 
 from main.serializer import BusinessSerializer
 from main.models import Business
@@ -39,3 +39,9 @@ class DiscountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Discounts
         fields = '__all__'
+
+
+class StatusSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Status
+        fields = "__all__"

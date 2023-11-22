@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Order, Discounts
+from .models import Order, Discounts, ProductAndService, Status
 from main.models import Business
-from .serializer import OrderSerializer, DiscountSerializer
+from .serializer import OrderSerializer, DiscountSerializer, ProductAndServicesSerializer, StatusSerialiser
 from rest_framework.response import Response
 
 # Create your views here.
@@ -59,3 +59,15 @@ class OrderViewSet(viewsets.ModelViewSet):
 class DiscountViewSet(viewsets.ModelViewSet):
     queryset = Discounts.objects.all()
     serializer_class = DiscountSerializer
+
+
+class ProductAndServiceViewSet(viewsets.ModelViewSet):
+    queryset = ProductAndService.objects.all()
+    serializer_class = ProductAndServicesSerializer
+    http_method_names = ['get']
+
+
+class StatusViewSet(viewsets.ModelViewSet):
+    queryset = Status.objects.all()
+    serializer_class = StatusSerialiser
+    http_method_names = ['get']
