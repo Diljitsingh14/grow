@@ -10,6 +10,9 @@ class Coordinates(models.Model):
     def __str__(self):
         return f"lt: {self.latitude}, lng: {self.longitude}"
 
+    class Meta:
+        verbose_name_plural = "Coordinates"
+
 
 class Address(models.Model):
     address_line_1 = models.CharField(max_length=200)
@@ -24,6 +27,9 @@ class Address(models.Model):
     def __str__(self):
         return f"{self.address_line_1}, {self.city}, {self.state}, {self.country}"
 
+    class Meta:
+        verbose_name_plural = "Address"
+
 
 class Clients(models.Model):
     first_name = models.CharField(max_length=48)
@@ -33,6 +39,9 @@ class Clients(models.Model):
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
+
+    class Meta:
+        verbose_name_plural = "Clients"
 
 
 class Business(models.Model):
@@ -49,3 +58,4 @@ class Business(models.Model):
 
     class Meta:
         unique_together = ["owner", "business_address"]
+        verbose_name_plural = "Businesses"

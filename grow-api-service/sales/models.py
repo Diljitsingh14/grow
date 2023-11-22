@@ -24,6 +24,9 @@ class Order(models.Model):
     payment = models.ForeignKey(
         "Payments", on_delete=models.SET_NULL, null=True, blank=True, related_name="sales_id")
 
+    def __str__(self) -> str:
+        return f"{self.business.business_name} {self.full_fill_on}"
+
 
 class Status(models.Model):
     name = models.CharField(max_length=48)
@@ -43,6 +46,9 @@ class Discounts(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        verbose_name_plural = "Discounts"
+
 
 class PromoCodes(models.Model):
     code = models.CharField(max_length=20, unique=True)
@@ -52,6 +58,9 @@ class PromoCodes(models.Model):
 
     def __str__(self):
         return self.code
+
+    class Meta:
+        verbose_name_plural = "PromoCodes"
 
 
 class Template(models.Model):
@@ -111,3 +120,6 @@ class Payments(models.Model):
 
     def __str__(self):
         return f"{self.order} - {self.amount} - {self.status}"
+
+    class Meta:
+        verbose_name_plural = "Payments"
