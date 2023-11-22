@@ -28,20 +28,24 @@ class Address(models.Model):
 class Clients(models.Model):
     first_name = models.CharField(max_length=48)
     last_name = models.CharField(max_length=48, blank=True, null=True)
-    phone_number = models.CharField(max_length=12)
-    email = models.EmailField(max_length=100)
+    phone_number = models.CharField(unique=True, max_length=12)
+    email = models.EmailField(unique=True, max_length=100)
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
 
 class Business(models.Model):
-    owner = models.ManyToManyField(Clients)
+    owner = models.ForeignKey(
+        Clients, on_delete=models.SET_NULL, blank=True, null=True)
     business_name = models.CharField(max_length=200)
-    business_address = models.OneToOneField(
+    business_address = models.ForeignKey(
         Address, on_delete=models.SET_NULL, blank=True, null=True)
     business_desc = models.CharField(max_length=1000, null=True, blank=True)
     business_type = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.business_name
+
+    class Meta:
+        unique_together = ["owner", "business_address"]
