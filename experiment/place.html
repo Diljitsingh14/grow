@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script>
+      let autocomplete;
+      function initMap() {
+        autocomplete = new google.maps.places.Autocomplete(
+          document.getElementById("autocomplete"),
+          {
+            types: ["establishment"],
+            componentRestrictions: { country: ["AU"] },
+            field: ["place_id", "geometry", "name"],
+          }
+        );
+        autocomplete.addListener("place_changed", onPlaceChange);
+      }
+    </script>
+    <script
+      async
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCM-uK8cogx4TL4e5QW2X3Av3OxvMpnxik&libraries=places&callback=initMap"
+      async
+      defer
+    ></script>
+  </head>
+  <body>
+    <h1>Hello</h1>
+    <input type="text" id="autocomplete" placeholder="Enter a place" />
+  </body>
+</html>
