@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import viewsets, response, serializers
-from .models import Business, Address, Coordinates, Clients
+from .models import Business, Address, Coordinates, Clients, Redirection
 from .serializer import BusinessSerializer, AddressSerializer, ClientSerialize
+from django.http import response, Http404
 
 # Create your views here.
 
@@ -62,3 +63,16 @@ class BusinessViewSet(viewsets.ModelViewSet):
 class ClientsViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerialize
     queryset = Clients.objects.all()
+
+
+def ReviewRedirect(request):
+    uuid = request.GET['id']
+    if not uuid:
+        return redirect("/")
+    try:
+        red_obj = Redirection.objects.get(uuid=uuid)
+    except:
+        raise Http404(
+            "Link is not associated! visit setup to set review link.")
+
+    return redirect(red_obj.link)
