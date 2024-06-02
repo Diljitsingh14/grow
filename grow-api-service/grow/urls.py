@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from main.views import ReviewRedirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/sales/", include("sales.urls")),
-    path("api/v1/", include('main.urls'))
+    path("api/v1/", include('main.urls')),
+    path("review/", ReviewRedirect, name="review redirect")
 ]

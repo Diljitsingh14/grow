@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 # Create your models here.
 
@@ -59,3 +60,23 @@ class Business(models.Model):
     class Meta:
         unique_together = ["owner", "business_address"]
         verbose_name_plural = "Businesses"
+
+
+class Redirection(models.Model):
+    uuid = models.UUIDField(
+        default=uuid.uuid4, unique=True)
+    link = models.URLField(default="/setup_url/", null=False)
+
+    def __str__(self):
+        # Display the UUID along with the link for better identification
+        return f"UUID: {self.uuid}"
+
+
+class Click_Counter(models.Model):
+    redirection = models.ForeignKey(
+        Redirection, null=False, blank=False, on_delete=models.CASCADE, db_index=True)
+    dateTime = models.DateTimeField(auto_now_add=True, db_index=True)
+    user_agent = models.TextField(blank=True, null=True)
+    operating_system = models.CharField(max_length=50, blank=True, null=True)
+    browser = models.CharField(max_length=50, blank=True, null=True)
+    # clicks = models.PositiveBigIntegerField(default=0,null=False,blank=False)

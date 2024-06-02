@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script>
+      let autocomplete;
+      const onPlaceChange = () => {
+        console.log(autocomplete);
+      };
+      function initMap() {
+        autocomplete = new google.maps.places.Autocomplete(
+          document.getElementById("autocomplete"),
+          {
+            types: ["establishment"],
+            componentRestrictions: { country: ["AU"] },
+            field: ["place_id", "geometry", "name"],
+          }
+        );
+        autocomplete.addListener("place_changed", onPlaceChange);
+      }
+    </script>
+    <script
+      async
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR-TdYleXzDXBSjO0TV2_obOgnWHQRaZQ&libraries=places&callback=initMap"
+      async
+      defer
+    ></script>
+  </head>
+  <body>
+    <h1>Hello</h1>
+    <input type="text" id="autocomplete" placeholder="Enter a place" />
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>MyTTag</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+    Google tag (gtag.js)
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-8G0MQ3D54L"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-8G0MQ3D54L");
+    </script>
+    <link
+      rel="shortcut icon"
+      href="https://mytt.ag/templates/frontend/images/logo.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://mytt.ag/templates/frontend/images/logo.png"
+    />
+    Google Fonts
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+      rel="stylesheet"
+    />
+
+    Vendor CSS Files
+    <link
+      href="https://mytt.ag/templates/frontend/css/aos.css"
+      rel="stylesheet"
+    />
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdDq5IlAAAAAJ-spgPflT7Qr0-H9JTFF9M5SwRw"></script>
+    <link
+      href="https://mytt.ag/templates/frontend/css/aos.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://mytt.ag/templates/frontend/css/bootstrap5.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://mytt.ag/templates/frontend/css/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://mytt.ag/templates/frontend/css/glightbox.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://mytt.ag/templates/frontend/css/remixicon.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://mytt.ag/templates/frontend/css/swiper-bundle.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://mytt.ag/templates/frontend/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://mytt.ag/templates/frontend/fonts/css/fontawesome.min.css"
+      rel="stylesheet"
+    />
+
+    Template Main CSS File
+    <script src="https://mytt.ag/templates/frontend/js/jquery-3.6.0.min.js"></script>
+    <script src="https://mytt.ag/templates/frontend/js/select2.full.min.js"></script>
+    <link
+      href="https://mytt.ag/templates/frontend/css/style.css"
+      rel="stylesheet"
+    />
+    <link
+      type="text/css"
+      href="https://mytt.ag/templates/traditional/css/style.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="position-relative d-flex flex-column" style="min-height: 100vh">
+    <header id="header" class="fixed-top" style="background-color: #3d4d6a">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="logo me-auto me-lg-0">
+            <a href="https://mytt.ag">MyTTag</a>
+          </h1>
+          <div>
+          <nav id="navbar" class="navbar">
+            <ul>
+              <li>
+                <a class="nav-link scrollto" href="https://mytt.ag/login"
+                  >Login</a
+                >
+              </li>
+              <li>
+                <a
+                  class="nav-link scrollto"
+                  href="https://taptag.shop/pages/nfc-coasters"
+                  >Products</a
+                >
+              </li>
+            </ul>
+          </nav>
+          .navbar
+          </div>
+          <div class="pe-2">
+            <a
+              target="_blank"
+              href="https://www.facebook.com/TaptagNFC"
+              class="mx-2"
+              ><i class="fa-brands fa-facebook"></i
+            ></a>
+            <a
+              target="_blank"
+              href="https://www.instagram.com/taptagnfc/"
+              class="mx-2"
+              ><i class="fa-brands fa-instagram"></i
+            ></a>
+          </div>
+          <i class="bi mobile-nav-toggle bi-list" style="z-index: 9999"></i>
+        </div>
+      </div>
+    </header>
+    End Header
+    ======= Header =======
+    <div class="pt-5"></div>
+    <section id="clients" class="clients section-bg pt-5 container-fluid">
+      <div class="container pb-2">
+        <div class="d-flex" data-aos="zoom-in">
+          <div class="d-flex align-items-center justify-content-center">
+            <a href="https://mytt.ag"> Home </a>
+            <i class="fa-solid fa-chevron-right mx-2 fs-6"></i>
+          </div>
+          <div class="d-flex align-items-center justify-content-center">
+            Google Api
+          </div>
+        </div>
+      </div>
+    </section>
+    ======= Contact Section =======
+    <section class="pb-5 pt-0 session-profile">
+      <div id="main-profile" class="container pt-2 px-0">
+        <div class="row mx-2 justify-content-center">
+          <div class="col-12">
+            <div class="header-content mb-3">
+              <h3 class="mt-5 text-center">Add your review website</h3>
+              <div class="d-flex top-hr w-75 mx-auto">
+                <hr class="hr-1" />
+                <hr class="hr-2" />
+                <hr class="hr-3" />
+                <hr class="hr-4" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="text-center">
+                <p>
+                  Search your Google Business page to automatically add your
+                  Google review
+                </p>
+              </div>
+              <input
+                type="text"
+                class="form-control rounded-pill"
+                id="map-search-box"
+                placeholder="Name of business"
+              />
+              <div
+                class="text-end mt-2 d-flex align-items-center justify-content-end"
+              >
+                <div class="me-1">Powered by</div>
+                <img
+                  src="https://mytt.ag/templates/frontend/images/icon-google.png"
+                  alt=""
+                />
+              </div>
+            </div>
+            <div class="main-input mt-3 mb-0 text-center">
+              <div class="d-flex justify-content-center">
+                <p>Copy your review link below</p>
+                <a class="copy-review-link ms-2" data-index="1" type="button">
+                  <i
+                    class="fa-regular fa-copy fs-4"
+                    type="button"
+                    rel="tooltip"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title=""
+                    data-bs-original-title="Copy review link"
+                    aria-label="Copy review link"
+                  ></i>
+                </a>
+              </div>
+              <input
+                name="review_page_1"
+                value=""
+                required
+                placeholder=""
+                class="border-pill text-center form-control border border-1"
+                type="text"
+              />
+            </div>
+            <div class="footer-link text-center">
+              <p>Can't find your review link? We can help.</p>
+              <a
+                target="_blank"
+                href="https://taptag.shop/blogs/news/how-to-find-a-google-review-link-yelp-reviews-more"
+              >
+                <p>Find your review page</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      $(document).ready(function () {
+        $(".copy-review-link").on("click", function () {
+          var link = $("input[name=review_page_1]").val();
+          var $temp = $("<input>");
+          $("body").append($temp);
+          $temp.val(link).select();
+          document.execCommand("copy");
+          $temp.remove();
+        });
+      });
+    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR-TdYleXzDXBSjO0TV2_obOgnWHQRaZQ&callback=initMap&libraries=places&v=weekly"
+      defer
+    ></script>
+    <script>
+      function initMap() {
+        const input = document.getElementById("map-search-box");
+        const searchBox = new google.maps.places.Autocomplete(input, {
+          fields: ["place_id", "geometry", "formatted_address", "name"],
+        });
+
+        searchBox.addListener("place_changed", () => {
+          const place = searchBox.getPlace();
+          var place_id = place.place_id;
+          var review_page =
+            "https://search.google.com/local/writereview?placeid=" + place_id;
+          $(".main-input input[name=review_page_1]").val(review_page);
+        });
+      }
+      window.initMap = initMap;
+    </script>
+
+    <footer id="footer" style="background: #3d4d6a" class="mt-auto">
+      <div class="container footer-bottom text-center clearfix">
+        <div>
+          &copy; Copyright <strong><span>2024 TapTag, LLC.</span></strong> - All
+          Rights Reserved.
+        </div>
+      </div>
+    </footer>
+    <script src="https://mytt.ag/templates/frontend/js/aos.js"></script>
+    <script src="https://mytt.ag/templates/frontend/js/bootstrap.bundle.min.js"></script>
+    <script src="https://mytt.ag/templates/frontend/js/glightbox.min.js"></script>
+    <script src="https://mytt.ag/templates/frontend/js/isotope.pkgd.min.js"></script>
+    <script src="https://mytt.ag/templates/frontend/js/swiper-bundle.min.js"></script>
+    <script src="https://mytt.ag/templates/frontend/js/noframework.waypoints.js"></script>
+    <script src="https://mytt.ag/templates/frontend/js/validate.js"></script>
+
+    Template Main JS File
+    <script src="https://mytt.ag/templates/frontend/js/main.js"></script>
+  </body>
+</html> -->
