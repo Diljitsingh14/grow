@@ -1,4 +1,5 @@
 import React from "react";
+import Carousel from "./carousel";
 
 const ProductList = [
   {
@@ -6,11 +7,15 @@ const ProductList = [
       name: "Google Review NFC + QR",
       key: "grNQ",
       label: "Google Review NFC with QR",
+      imgUri: "",
+      desc: "",
     },
     google_revie_qr: {
       name: "Google Review NFC + QR",
       key: "grQ",
       label: "Google Review NFC with QR",
+      imgUri: "",
+      desc: "",
     },
   },
 ];
@@ -20,7 +25,11 @@ const Product = () => {
 };
 
 const Products = () => {
-  return <></>;
+  return (
+    <>
+      <Carousel></Carousel>
+    </>
+  );
 };
 
 export default Products;
