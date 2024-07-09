@@ -1,306 +1,201 @@
-import React from "react";
+"use client";
+import {
+  Button,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from "@headlessui/react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import classNames from "classnames";
+
 import styles from "./styles.module.css";
 
-const Header: React.FC = () => {
+interface NavigationItem {
+  name: string;
+  href: string;
+  current: boolean;
+}
+export interface IUser {
+  session?: string;
+  name?: string;
+  email?: string;
+}
+
+interface IHeader {
+  user?: IUser;
+  isLogin: boolean;
+}
+
+const navigation: NavigationItem[] = [
+  { name: "Home", href: "#", current: true },
+  { name: "Products", href: "#", current: false },
+  { name: "Services", href: "#", current: false },
+  //   { name: "Contact us", href: "#", current: false },
+  { name: "Contact us", href: "#", current: false },
+];
+
+const Header: React.FC<IHeader> = ({ user, isLogin }) => {
   return (
-    <header>
-      <div id="header-sticky" className="header__area grey-bg">
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4">
-              <div className="logo">
-                <a href="/">
-                  <img
-                    alt="logo"
-                    fetchPriority="high"
-                    width="140"
-                    height="23"
-                    decoding="async"
-                    data-nimg="1"
-                    style={{ color: "transparent" }}
-                    src="/images/logo/brand-dark.png"
-                  />
-                </a>
+    <Disclosure as="nav" className="bg-gray-800">
+      {({ open }) => (
+        <>
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="relative flex h-16 items-center justify-between">
+              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                {/* Mobile menu button*/}
+                <DisclosureButton className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                  <span className="absolute -inset-0.5" />
+                  <span className="sr-only">Open main menu</span>
+                  {open ? (
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                  ) : (
+                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                  )}
+                </DisclosureButton>
               </div>
-            </div>
-            <div className="col-xl-9 col-lg-9 col-md-8 col-sm-8">
-              <div className="header__right p-relative d-flex justify-content-between align-items-center">
-                <div className="main-menu d-none d-lg-block">
-                  <nav>
-                    <ul>
-                      <li className="active has-dropdown">
-                        <a href="/">Home</a>
-                        <ul className="submenu transition-3">
-                          <li>
-                            <a href="/">Home Style 1</a>
-                          </li>
-                          <li>
-                            <a href="/home-2">Home Style 2</a>
-                          </li>
-                          <li>
-                            <a href="/home-3">Home Style 3</a>
-                          </li>
-                          <li>
-                            <a href="/home-4">Home Style 4</a>
-                          </li>
-                          <li>
-                            <a href="/home-5">Home Style 5</a>
-                          </li>
-                          <li>
-                            <a href="/home-6">Home Style 6</a>
-                          </li>
-                          <li>
-                            <a href="/home-7">Home Style 7</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li className="mega-menu has-dropdown">
-                        <a href="/shop">Shop</a>
-                        <ul
-                          className="submenu transition-3"
-                          style={{
-                            background: "url(/assets/img/bg/mega-menu-bg.jpg)",
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center right",
-                            backgroundSize: "cover",
-                          }}
-                        >
-                          <li className="has-dropdown">
-                            <a href="/shop">Shop Pages</a>
-                            <ul>
-                              <li>
-                                <a href="/shop">Standard Shop Page</a>
-                              </li>
-                              <li>
-                                <a href="/shop-right">Shop Right Sidebar</a>
-                              </li>
-                              <li>
-                                <a href="/shop-4-col">Shop 4 Column</a>
-                              </li>
-                              <li>
-                                <a href="/shop-3-col">Shop 3 Column</a>
-                              </li>
-                              <li>
-                                <a href="/shop">Shop Page</a>
-                              </li>
-                              <li>
-                                <a href="/shop">Shop Page</a>
-                              </li>
-                              <li>
-                                <a href="/shop">Shop Infinity</a>
-                              </li>
-                            </ul>
-                          </li>
-                          <li className="has-dropdown">
-                            <a href="/shop">Products Pages</a>
-                            <ul>
-                              <li>
-                                <a href="/product-details">Product Details</a>
-                              </li>
-                              <li>
-                                <a href="/product-details">Product Page V2</a>
-                              </li>
-                              <li>
-                                <a href="/product-details">Product Page V3</a>
-                              </li>
-                              <li>
-                                <a href="/product-details">Product Page V4</a>
-                              </li>
-                              <li>
-                                <a href="/product-details">Simple Product</a>
-                              </li>
-                              <li>
-                                <a href="/product-details">Variable Product</a>
-                              </li>
-                              <li>
-                                <a href="/product-details">External Product</a>
-                              </li>
-                            </ul>
-                          </li>
-                          <li className="has-dropdown">
-                            <a href="/shop">Other Shop Pages</a>
-                            <ul>
-                              <li>
-                                <a href="/wishlist">Wishlist</a>
-                              </li>
-                              <li>
-                                <a href="/compare">Compare</a>
-                              </li>
-                              <li>
-                                <a href="/cart">Shopping Cart</a>
-                              </li>
-                              <li>
-                                <a href="/checkout">Checkout</a>
-                              </li>
-                              <li>
-                                <a href="/register">Register</a>
-                              </li>
-                              <li>
-                                <a href="/login">Login</a>
-                              </li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </li>
-                      <li className="active has-dropdown">
-                        <a href="/blog">Blog</a>
-                        <ul className="submenu transition-3">
-                          <li>
-                            <a href="/blog">Blog</a>
-                          </li>
-                          <li>
-                            <a href="/blog-left-sidebar">Blog Left Sidebar</a>
-                          </li>
-                          <li>
-                            <a href="/blog-no-sidebar">Blog No Sidebar</a>
-                          </li>
-                          <li>
-                            <a href="/blog-2-col">Blog 2 Column</a>
-                          </li>
-                          <li>
-                            <a href="/blog-2-col-mas">Blog 2 Col Masonry</a>
-                          </li>
-                          <li>
-                            <a href="/blog-3-col">Blog 3 Column</a>
-                          </li>
-                          <li>
-                            <a href="/blog-details">Blog Details</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li className="active has-dropdown">
-                        <a href="/shop">Pages</a>
-                        <ul className="submenu transition-3">
-                          <li>
-                            <a href="/wishlist">Wishlist</a>
-                          </li>
-                          <li>
-                            <a href="/cart">Shopping Cart</a>
-                          </li>
-                          <li>
-                            <a href="/checkout">Checkout</a>
-                          </li>
-                          <li>
-                            <a href="/account">Account</a>
-                          </li>
-                          <li>
-                            <a href="/register">Register</a>
-                          </li>
-                          <li>
-                            <a href="/login">Login</a>
-                          </li>
-                          <li>
-                            <a href="/404">Error 404</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li className="undefined">
-                        <a href="/contact">Contact</a>
-                      </li>
-                    </ul>
-                  </nav>
+              <div
+                className={classNames(
+                  styles.logo,
+                  "flex flex-shrink-0 items-center"
+                )}
+              >
+                <img
+                  className="h-8 w-auto"
+                  src="/images/logo/brand-light.png"
+                  alt="Tap-wizard"
+                />
+              </div>
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div className="hidden sm:ml-6 sm:block">
+                  <div className="flex space-x-4">
+                    {navigation.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className={classNames(
+                          item.current
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          "rounded-md px-3 py-2 text-sm font-medium"
+                        )}
+                        aria-current={item.current ? "page" : undefined}
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
                 </div>
-                <div className="mobile-menu-btn d-lg-none">
-                  <button className="mobile-menu-toggle">
-                    <i className="fas fa-bars"></i>
-                  </button>
-                </div>
-                <div className="header__action">
-                  <ul>
-                    <li>
-                      <button className="search-toggle">
-                        <i className="ion-ios-search-strong"></i>Search
-                      </button>
-                    </li>
-                    <li>
-                      <button className="cart">
-                        <i className="ion-bag"></i> Cart <span>(0)</span>
-                      </button>
-                      <div className="mini-cart">
-                        <h5>Your cart is empty</h5>
-                      </div>
-                    </li>
-                    <li>
-                      <button>
-                        <i className="far fa-bars"></i>
-                      </button>
-                      <ul className="extra-info">
-                        <li>
-                          <div className="my-account">
-                            <div className="extra-title">
-                              <h5>My Account</h5>
-                            </div>
-                            <ul>
-                              <li>
-                                <a href="/login">Login</a>
-                              </li>
-                              <li>
-                                <a href="/wishlist">Wishlist</a>
-                              </li>
-                              <li>
-                                <a href="/cart">Cart</a>
-                              </li>
-                              <li>
-                                <a href="/checkout">Checkout</a>
-                              </li>
-                              <li>
-                                <a href="/register">Create Account</a>
-                              </li>
-                            </ul>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="lang">
-                            <div className="extra-title">
-                              <h5>Language</h5>
-                            </div>
-                            <ul>
-                              <li>
-                                <a href="/">English</a>
-                              </li>
-                              <li>
-                                <a href="/">France</a>
-                              </li>
-                              <li>
-                                <a href="/">Germany</a>
-                              </li>
-                              <li>
-                                <a href="/">Bangla</a>
-                              </li>
-                            </ul>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="currency">
-                            <div className="extra-title">
-                              <h5>Currency</h5>
-                            </div>
-                            <ul>
-                              <li>
-                                <a href="/">USD - US Dollar</a>
-                              </li>
-                              <li>
-                                <a href="/">EUR - Euro</a>
-                              </li>
-                              <li>
-                                <a href="/">GBP - British Pound</a>
-                              </li>
-                              <li>
-                                <a href="/">INR - Indian Rupee</a>
-                              </li>
-                            </ul>
-                          </div>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
+              </div>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                {isLogin ? (
+                  <Menu as="div" className="relative ml-3">
+                    <button
+                      type="button"
+                      className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    >
+                      <span className="absolute -inset-1.5" />
+                      <span className="sr-only">View notifications</span>
+                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    </button>
+                    {/* Profile dropdown */}
+
+                    <div>
+                      <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                        <span className="absolute -inset-1.5" />
+                        <span className="sr-only">Open user menu</span>
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          alt=""
+                        />
+                      </MenuButton>
+                    </div>
+                    <MenuItems
+                      transition
+                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                    >
+                      <MenuItem>
+                        {({ focus }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              focus ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            Your Profile
+                          </a>
+                        )}
+                      </MenuItem>
+                      <MenuItem>
+                        {({ focus }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              focus ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            Settings
+                          </a>
+                        )}
+                      </MenuItem>
+                      <MenuItem>
+                        {({ focus }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              focus ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            Sign out
+                          </a>
+                        )}
+                      </MenuItem>
+                    </MenuItems>
+                  </Menu>
+                ) : (
+                  <div className="flex justify-content-center">
+                    <Button className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700">
+                      Login
+                    </Button>
+                    <Button className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700">
+                      Sign up
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </header>
+
+          <DisclosurePanel className="sm:hidden">
+            <div className="space-y-1 px-2 pb-3 pt-2">
+              {navigation.map((item) => (
+                <DisclosureButton
+                  key={item.name}
+                  as="a"
+                  href={item.href}
+                  className={classNames(
+                    item.current
+                      ? "bg-gray-900 text-white"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                    "block rounded-md px-3 py-2 text-base font-medium"
+                  )}
+                  aria-current={item.current ? "page" : undefined}
+                >
+                  {item.name}
+                </DisclosureButton>
+              ))}
+            </div>
+          </DisclosurePanel>
+        </>
+      )}
+    </Disclosure>
   );
 };
 
