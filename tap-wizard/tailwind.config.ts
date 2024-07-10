@@ -19,6 +19,9 @@ const config: Config = {
         "90vh": "90vh",
         "95vh": "95vh",
       },
+      padding: {
+        "10": "10rem",
+      },
     },
   },
   plugins: [require("flowbite/plugin")],

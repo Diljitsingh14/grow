@@ -23,7 +23,7 @@ const Features: React.FC = () => {
   return (
     <Flowbite theme={{ theme: customTheme }}>
       <div className={classNames(styles.h90vh)}>
-        <Carousel className="rounded-none" slide={false}>
+        <Carousel className="rounded-none" slide={true}>
           {/* <div
             style={{
               background: 'url("/images/slides/1.png")',

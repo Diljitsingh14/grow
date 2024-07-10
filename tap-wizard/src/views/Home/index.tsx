@@ -12,7 +12,7 @@ const HomeView: React.FC = () => {
     <>
       <Header user={user} isLogin={isLogin} />
       <Features />
-      <Products />
+      <Products id="products" />
     </>
   );
 };

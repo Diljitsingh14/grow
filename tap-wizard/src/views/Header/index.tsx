@@ -32,7 +32,7 @@ interface IHeader {
 
 const navigation: NavigationItem[] = [
   { name: "Home", href: "#", current: true },
-  { name: "Products", href: "#", current: false },
+  { name: "Products", href: "#products", current: false },
   { name: "Services", href: "#", current: false },
   //   { name: "Contact us", href: "#", current: false },
   { name: "Contact us", href: "#", current: false },
