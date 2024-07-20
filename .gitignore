@@ -1,4 +1,4 @@
 experiment/
 tap-wizard/node_modules
 next-door/node_modules
-.env
+tap-wizard/.env
