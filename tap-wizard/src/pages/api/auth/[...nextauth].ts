@@ -1,11 +1,11 @@
-import { NextAuthOptions } from "next-auth";
-import NextAuth from "next-auth/next";
+// pages/api/auth/[...nextauth].ts
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 
-const authOption: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
@@ -22,29 +22,25 @@ const authOption: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ account, profile, credentials }) {
+    async signIn({ account, profile }) {
       if (!profile?.email) {
         throw new Error("No profile");
       }
       return true;
     },
-    async jwt(jwtVar) {
-      const { token, user, account, profile } = jwtVar;
-
+    async jwt({ token, account }) {
       if (account) {
-        token.accessToken = account?.access_token;
-        token.id = account?.providerAccountId;
+        token.accessToken = account.access_token as string | undefined;
+        token.id = account.providerAccountId as string | undefined;
       }
       return token;
     },
-    async session({ session, token, user }) {
-      // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
-      session.id = token.id;
-
+    async session({ session, token }) {
+      session.accessToken = token.accessToken as string | undefined;
+      session.id = token.id as string | undefined;
       return session;
     },
   },
 };
 
-export default NextAuth(authOption);
+export default NextAuth(authOptions);
