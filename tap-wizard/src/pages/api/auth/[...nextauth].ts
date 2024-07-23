@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET!;
 
 const authOptions: NextAuthOptions = {
   session: {
@@ -21,6 +22,7 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  secret: NEXTAUTH_SECRET, // Add the secret here
   callbacks: {
     async signIn({ account, profile }) {
       if (!profile?.email) {
