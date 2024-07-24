@@ -4,13 +4,29 @@ from .models import Business, Address, Coordinates, Clients, Redirection
 from .serializer import BusinessSerializer, AddressSerializer, ClientSerialize
 from django.http import response, Http404
 
-# Create your views here.
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from django.contrib.auth import logout
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        request.user.auth_token.delete()
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
 
 
 class BusinessViewSet(viewsets.ModelViewSet):
     model = Business
     queryset = Business.objects.all()
     serializer_class = BusinessSerializer
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     def create_proxy_business_address(self, data):
         coordinates = data.get("coordinates", None)
@@ -76,3 +92,15 @@ def ReviewRedirect(request):
             "Link is not associated! visit setup to set review link.")
 
     return redirect(red_obj.link)
+
+
+class AuthTest(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        content = {
+            'user': str(request.user),  # `django.contrib.auth.User` instance.
+            'auth': str(request.auth),  # None
+        }
+        return Response(content)
