@@ -30,9 +30,13 @@ const Login: React.FC = () => {
       try {
         const res = await axios.post(url, loginData);
         console.log(res.data);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error(err);
-        setError(err.message);
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred.");
+        }
       } finally {
         setLoading(false);
       }
