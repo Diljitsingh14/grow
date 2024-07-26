@@ -1,6 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { HOST, LOGIN } from "@/constants/urls";
+import { TOKENS } from "@/constants/cookies";
+import { setCookie } from "cookies-next";
+import { LOGIN_REDIRECT_ROUTE } from "@/constants/routes";
 
 interface LoginData {
   username: string;
@@ -30,6 +33,10 @@ const Login: React.FC = () => {
       try {
         const res = await axios.post(url, loginData);
         console.log(res.data);
+        const { access, refresh } = res.data;
+
+        setCookie(TOKENS.ACCESS, access);
+        setCookie(TOKENS.REFRESH, refresh);
       } catch (err: unknown) {
         console.error(err);
         if (err instanceof Error) {
@@ -39,6 +46,7 @@ const Login: React.FC = () => {
         }
       } finally {
         setLoading(false);
+        window.location.href = LOGIN_REDIRECT_ROUTE;
       }
     } else {
       setLoading(false);
