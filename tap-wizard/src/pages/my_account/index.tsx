@@ -1,4 +1,5 @@
 import { SIDEBAR_MENU_ITEMS } from "@/constants/myaccounts";
+import { logout } from "@/utils/common/logout";
 import ConnectAccountsView from "@/views/MyAccount/ConnectApps";
 import Sidebar from "@/views/MyAccount/SideBar";
 import React, { useState } from "react";
@@ -15,6 +16,9 @@ const MainContent: React.FC<MainContentProps> = ({ selectedTab }) => {
 
   const handleTabChange = (key: string) => {
     setCurrentTab(key);
+    if (key == SIDEBAR_MENU_ITEMS[2].key) {
+      logout();
+    }
   };
 
   switch (currentTab) {

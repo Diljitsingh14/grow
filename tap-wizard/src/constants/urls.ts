@@ -4,3 +4,4 @@
 export const HOST = "http://localhost:8000";
 
 export const LOGIN = `/api/token/`;
+export const REFRESH_TOKEN_URL = "/api/token/refresh/";
