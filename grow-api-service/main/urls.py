@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import BusinessViewSet, ClientsViewSet, ReviewRedirect, AuthTest, LogoutView
+from .views import BusinessViewSet, ClientsViewSet, ReviewRedirect, AuthTest, LogoutView, OAuthAccountListCreateView, ping
 from rest_framework.authtoken.views import obtain_auth_token
 
 router = routers.DefaultRouter()
@@ -13,6 +13,10 @@ urlpatterns = [
     path("review/", ReviewRedirect, name="review redirect"),
     path("auth_test/", AuthTest.as_view(), name="auth test"),
     path("logout/", LogoutView.as_view(), name="logout"),
+    path("ping", ping, name="auth-ping"),
+    path('oauth-accounts/', OAuthAccountListCreateView.as_view(),
+         name='oauth-account-list-create'),
+
     # path("login/", obtain_auth_token, name="login")
 
 ]

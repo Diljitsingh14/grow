@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Business, Clients, Address, Coordinates, Redirection, Click_Counter
+from .models import Business, Clients, Address, Coordinates, Redirection, Click_Counter, OAuthAccount
 
 # Register your models here.
 admin.site.register([Business, Clients, Address,
-                    Coordinates, Redirection, Click_Counter])
+                    Coordinates, Redirection, Click_Counter, OAuthAccount])

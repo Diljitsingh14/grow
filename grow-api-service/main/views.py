@@ -1,15 +1,18 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from rest_framework import viewsets, response, serializers
-from .models import Business, Address, Coordinates, Clients, Redirection
-from .serializer import BusinessSerializer, AddressSerializer, ClientSerialize
-from django.http import response, Http404
+from django.http import response, Http404, JsonResponse
+from django.contrib.auth import logout
 
+from .models import Business, Address, Coordinates, Clients, Redirection, OAuthAccount
+from .serializer import BusinessSerializer, AddressSerializer, ClientSerialize, OAuthAccountSerializer
+
+from rest_framework import viewsets, response, serializers
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from django.contrib.auth import logout
 
 
 class LogoutView(APIView):
@@ -26,7 +29,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
     queryset = Business.objects.all()
     serializer_class = BusinessSerializer
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def create_proxy_business_address(self, data):
         coordinates = data.get("coordinates", None)
@@ -79,6 +82,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
 class ClientsViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerialize
     queryset = Clients.objects.all()
+    permission_classes = [IsAuthenticated]
 
 
 def ReviewRedirect(request):
@@ -95,7 +99,7 @@ def ReviewRedirect(request):
 
 
 class AuthTest(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
@@ -104,3 +108,19 @@ class AuthTest(APIView):
             'auth': str(request.auth),  # None
         }
         return Response(content)
+
+
+class OAuthAccountListCreateView(ListCreateAPIView):
+    serializer_class = OAuthAccountSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return OAuthAccount.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+@login_required
+def ping(request):
+    return JsonResponse({"message": "pong", "user": request.user.username})

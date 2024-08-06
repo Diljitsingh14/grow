@@ -1,3 +1,4 @@
+from .models import OAuthAccount
 from rest_framework import serializers
 from rest_framework.fields import empty
 from .models import Business, Address, Coordinates, Clients
@@ -82,3 +83,16 @@ class BusinessSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         model = Business
+
+
+class OAuthAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OAuthAccount
+        fields = '__all__'
+
+    def validate(self, data):
+        user = data['user']
+        if OAuthAccount.objects.filter(user=user).count() >= 5:
+            raise serializers.ValidationError(
+                "A user cannot have more than 5 OAuth accounts.")
+        return data
