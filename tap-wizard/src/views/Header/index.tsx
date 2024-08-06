@@ -13,6 +13,8 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 
 import styles from "./styles.module.css";
+import Link from "next/link";
+import { LOGIN_ROUTE } from "@/constants/routes";
 
 interface NavigationItem {
   name: string;
@@ -47,9 +49,9 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
-                <DisclosureButton className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                  <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Open main menu</span>
+                <DisclosureButton
+                  className={`"relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white hidden ${styles.sm_v}`}
+                >
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                   ) : (
@@ -69,9 +71,12 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
                   alt="Tap-wizard"
                 />
               </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
+              {/* main items */}
+              <div
+                className={`flex ${styles.sm_h} flex-1 items-center justify-center sm:items-stretch sm:justify-start`}
+              >
+                <div className="">
+                  <div className=" space-x-4">
                     {navigation.map((item) => (
                       <a
                         key={item.name}
@@ -90,6 +95,7 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
                   </div>
                 </div>
               </div>
+              {/* User section  */}
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {isLogin ? (
                   <Menu as="div" className="relative ml-3">
@@ -105,8 +111,6 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
 
                     <div>
                       <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
                           src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
@@ -161,9 +165,12 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
                   </Menu>
                 ) : (
                   <div className="flex justify-content-center">
-                    <Button className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700">
+                    <Link
+                      href={LOGIN_ROUTE}
+                      className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
+                    >
                       Login
-                    </Button>
+                    </Link>
                     <Button className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700">
                       Sign up
                     </Button>
@@ -173,7 +180,7 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
             </div>
           </div>
 
-          <DisclosurePanel className="sm:hidden">
+          <DisclosurePanel className="">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navigation.map((item) => (
                 <DisclosureButton
