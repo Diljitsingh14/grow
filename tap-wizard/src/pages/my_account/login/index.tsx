@@ -1,9 +1,10 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
-import { HOST, LOGIN } from "@/constants/urls";
+import { AUTH_API } from "@/constants/urls";
 import { TOKENS } from "@/constants/cookies";
 import { setCookie } from "cookies-next";
 import { LOGIN_REDIRECT_ROUTE } from "@/constants/routes";
+import { signIn } from "next-auth/react";
 
 interface LoginData {
   username: string;
@@ -28,15 +29,23 @@ const Login: React.FC = () => {
     setLoading(true);
 
     if (loginData.password && loginData.username) {
-      const url = `${HOST}/${LOGIN}`;
-      console.log("click", url, HOST);
+      const url = `${AUTH_API.LOGIN}`;
       try {
         const res = await axios.post(url, loginData);
-        console.log(res.data);
         const { access, refresh } = res.data;
 
-        setCookie(TOKENS.ACCESS, access);
-        setCookie(TOKENS.REFRESH, refresh);
+        // Set OAuth token in cookies
+        setCookie(TOKENS.ACCESS, access!);
+        setCookie(TOKENS.REFRESH, refresh!);
+
+        // Sign in using the JWT token
+        const result = await signIn("credentials", {
+          redirect: false,
+          accessTokenJWT: access,
+          refreshTokenJWT: refresh,
+        });
+
+        window.location.href = LOGIN_REDIRECT_ROUTE;
       } catch (err: unknown) {
         console.error(err);
         if (err instanceof Error) {
@@ -46,7 +55,6 @@ const Login: React.FC = () => {
         }
       } finally {
         setLoading(false);
-        window.location.href = LOGIN_REDIRECT_ROUTE;
       }
     } else {
       setLoading(false);
@@ -67,9 +75,6 @@ const Login: React.FC = () => {
                 alt="Your Company"
               />
               <hr className="mt-4" />
-              {/* <h2 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                Login
-              </h2> */}
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
