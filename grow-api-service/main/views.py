@@ -118,6 +118,8 @@ class OAuthAccountListCreateView(ListCreateAPIView):
         return OAuthAccount.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        print("Request data:", self.request.data)
+        print("Authenticated user:", self.request.user)
         serializer.save(user=self.request.user)
 
 
