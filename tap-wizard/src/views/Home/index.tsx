@@ -11,14 +11,14 @@ import Footer from "../Footer";
 import Services from "../Services";
 
 const HomeView: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+
+  const fetchAuthStatus = async () => {
+    const data = await checkAuth();
+    setIsLogin(data?.auth ? true : false);
+  };
 
   useEffect(() => {
-    const fetchAuthStatus = async () => {
-      const data = await checkAuth();
-      setIsLogin(data?.is_authenticated || false);
-    };
-
     fetchAuthStatus();
   }, []);
 

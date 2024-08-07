@@ -20,7 +20,6 @@ const MyCalendar: React.FC = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("/api/calendar/getEvents");
-        console.log(response);
         const data = await response.json();
         const formattedEvents = data.items.map((event: any) => ({
           id: event.id,

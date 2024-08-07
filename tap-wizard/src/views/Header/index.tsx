@@ -10,6 +10,13 @@ import {
   MenuItems,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  faUser,
+  faUserGear,
+  faArrowRightToBracket,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import classNames from "classnames";
 
 import styles from "./styles.module.css";
@@ -38,6 +45,27 @@ const navigation: NavigationItem[] = [
   { name: "Services", href: "#", current: false },
   //   { name: "Contact us", href: "#", current: false },
   { name: "Contact us", href: "#", current: false },
+];
+
+const userMenuItems = [
+  {
+    name: "My Account",
+    key: "my-acc",
+    link: "/my_account",
+    icon: <FontAwesomeIcon icon={faUser} />,
+  },
+  {
+    name: "Settings",
+    key: "my-acc-settings",
+    link: "/my_account?tab=settings",
+    icon: <FontAwesomeIcon icon={faUserGear} />,
+  },
+  {
+    name: "Sign out",
+    key: "sign-out",
+    link: "/my_account?tab=logout",
+    icon: <FontAwesomeIcon icon={faArrowRightToBracket} />,
+  },
 ];
 
 const Header: React.FC<IHeader> = ({ user, isLogin }) => {
@@ -98,10 +126,10 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
               {/* User section  */}
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {isLogin ? (
-                  <Menu as="div" className="relative ml-3">
+                  <Menu as="div" className="relative mx-auto flex">
                     <button
                       type="button"
-                      className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      className="relative rounded-full mr-3 bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">View notifications</span>
@@ -109,58 +137,37 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
                     </button>
                     {/* Profile dropdown */}
 
-                    <div>
-                      <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          alt=""
-                        />
-                      </MenuButton>
-                    </div>
+                    <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                      <img
+                        className="h-8 w-8 rounded-full"
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
+                      />
+                    </MenuButton>
                     <MenuItems
                       transition
-                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                      style={{
+                        mixBlendMode: "luminosity",
+                        background: "rgba(0,0,0,0.5)",
+                      }}
+                      className="absolute right-0 z-10 mt-5 top-5 w-48 origin-top-right rounded-sm bg-black py-1 shadow-lg ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                     >
-                      <MenuItem>
-                        {({ focus }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              focus ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Your Profile
-                          </a>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ focus }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              focus ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Settings
-                          </a>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ focus }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              focus ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Sign out
-                          </a>
-                        )}
-                      </MenuItem>
+                      {userMenuItems.map((item) => (
+                        <MenuItem key={item.key}>
+                          {({ focus }) => (
+                            <Link
+                              href={item.link}
+                              className={classNames(
+                                focus ? "bg-gray-100 text-black" : "text-white",
+                                "block px-4 py-2 text-sm "
+                              )}
+                            >
+                              <span className="mx-2">{item.icon}</span>{" "}
+                              {item.name}
+                            </Link>
+                          )}
+                        </MenuItem>
+                      ))}
                     </MenuItems>
                   </Menu>
                 ) : (
