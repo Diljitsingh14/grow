@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -80,3 +81,18 @@ class Click_Counter(models.Model):
     operating_system = models.CharField(max_length=50, blank=True, null=True)
     browser = models.CharField(max_length=50, blank=True, null=True)
     # clicks = models.PositiveBigIntegerField(default=0,null=False,blank=False)
+
+
+class OAuthAccount(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='oauth_accounts')
+    provider = models.CharField(max_length=255)
+    provider_account_id = models.CharField(max_length=255, unique=True)
+    access_token = models.TextField()
+    expires_at = models.IntegerField()
+    scope = models.TextField()
+    token_type = models.CharField(max_length=255)
+    id_token = models.TextField()
+
+    def __str__(self):
+        return f"{self.provider} account for {self.user.username}"

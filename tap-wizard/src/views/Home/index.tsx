@@ -1,20 +1,37 @@
-import React from "react";
+// views/Home.tsx
+import React, { useEffect, useState } from "react";
+import checkAuth from "@/utils/common/authTest";
 import Header from "@/views/Header";
 import { Carousel } from "flowbite-react";
 import { IUser } from "@/views/Header";
 import Features from "@/views/Features";
 import Products from "../Products";
 import AuthButton from "@/components/AuthButton";
+import Footer from "../Footer";
+import Services from "../Services";
 
 const HomeView: React.FC = () => {
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+
+  const fetchAuthStatus = async () => {
+    const data = await checkAuth();
+    setIsLogin(data?.auth ? true : false);
+  };
+
+  useEffect(() => {
+    fetchAuthStatus();
+  }, []);
+
   const user: IUser = {};
-  const isLogin = false;
+
   return (
     <>
       <Header isLogin={isLogin} />
       <Features />
       <Products id="products" />
-      <AuthButton></AuthButton>
+      {/* <AuthButton></AuthButton> */}
+      <Services />
+      <Footer />
     </>
   );
 };

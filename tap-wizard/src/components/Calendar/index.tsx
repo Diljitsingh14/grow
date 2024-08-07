@@ -20,7 +20,6 @@ const MyCalendar: React.FC = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("/api/calendar/getEvents");
-        console.log(response);
         const data = await response.json();
         const formattedEvents = data.items.map((event: any) => ({
           id: event.id,
@@ -38,15 +37,20 @@ const MyCalendar: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ height: "700px" }}>
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: "100%" }}
-      />
-    </div>
+    <>
+      <h3 className="text-xl py-2 px-4 bg-blue-500 text-white mb-5">
+        Schedule For This Month
+      </h3>
+      <div style={{ height: "700px" }} className="border-2 p-4">
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: "100%" }}
+        />
+      </div>
+    </>
   );
 };
 

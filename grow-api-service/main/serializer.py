@@ -1,3 +1,5 @@
+import logging
+from .models import OAuthAccount
 from rest_framework import serializers
 from rest_framework.fields import empty
 from .models import Business, Address, Coordinates, Clients
@@ -82,3 +84,17 @@ class BusinessSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         model = Business
+
+
+logger = logging.getLogger(__name__)
+
+
+class OAuthAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OAuthAccount
+        fields = '__all__'
+        read_only_fields = ('user',)
+
+    def validate(self, data):
+        # logger.debug(f"Validating data: {data}")
+        return data

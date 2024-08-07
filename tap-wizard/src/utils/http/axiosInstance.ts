@@ -1,5 +1,6 @@
 import { TOKENS } from "@/constants/cookies";
-import { REFRESH_TOKEN_URL } from "@/constants/urls";
+import { LOGIN_REDIRECT_ROUTE } from "@/constants/routes";
+import { AUTH_API } from "@/constants/urls";
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
@@ -8,8 +9,8 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = getCookie(TOKENS.ACCESS);
+axiosInstance.interceptors.request.use(async (config) => {
+  const token = await getCookie(TOKENS.ACCESS);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -25,12 +26,11 @@ axiosInstance.interceptors.response.use(
       const refreshToken = getCookie(TOKENS.REFRESH);
 
       try {
-        const response = await axiosInstance.post(REFRESH_TOKEN_URL, {
+        const response = await axiosInstance.post(AUTH_API.REFRESH_TOKEN_URL, {
           refresh: refreshToken,
         });
 
         const { access } = response.data;
-        console.log("retry access token get is : ", access);
         setCookie(TOKENS.ACCESS, access);
         axiosInstance.defaults.headers.common[
           "Authorization"
@@ -39,11 +39,11 @@ axiosInstance.interceptors.response.use(
       } catch (err) {
         deleteCookie(TOKENS.ACCESS);
         deleteCookie(TOKENS.REFRESH);
-        window.location.href = "/login";
+        window.location.href = LOGIN_REDIRECT_ROUTE;
       }
     }
     return Promise.reject(error);
   }
 );
 
-export default axios;
+export default axiosInstance;

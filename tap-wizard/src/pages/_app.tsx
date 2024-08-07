@@ -1,12 +1,9 @@
 import { SessionProvider } from "next-auth/react";
 import { AppProps } from "next/app";
-import { Session } from "../types/session";
-import { useEffect } from "react";
-
+import { Session } from "@/types/session";
 import { Inter } from "next/font/google";
 
 import "../styles/globals.css";
-// import "../styles/site_styles.css";
 import "swiper/swiper-bundle.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -20,9 +17,6 @@ interface MyAppProps extends AppProps {
 }
 
 const MyApp: React.FC<MyAppProps> = ({ Component, pageProps }) => {
-  useEffect(() => {
-    console.log("test");
-  }, []);
   return (
     <div className={inter.className}>
       <SessionProvider session={pageProps.session}>

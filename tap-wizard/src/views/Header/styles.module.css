@@ -1,3 +1,12 @@
 .logo {
   margin-left: 50px !important;
 }
+
+@media (max-width: 840px) {
+  .sm_h {
+    display: none !important;
+  }
+  .sm_v {
+    display: block;
+  }
+}

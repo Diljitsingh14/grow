@@ -1,15 +1,25 @@
-// types/next-auth.d.ts or pages/api/auth/next-auth.d.ts
-import NextAuth from "next-auth";
-import { DefaultSession } from "next-auth";
+import { DefaultSession, DefaultJWT } from "next-auth";
 
 declare module "next-auth" {
-  interface Session {
+  interface Session extends DefaultSession {
     accessToken?: string;
     id?: string;
+    provider?: string;
+    expiresAt?: number;
+    scope?: string;
+    tokenType?: string;
+    idToken?: string;
+    isAuthSaved?: boolean;
   }
 
-  interface JWT {
+  interface JWT extends DefaultJWT {
     accessToken?: string;
     id?: string;
+    provider?: string;
+    expiresAt?: number;
+    scope?: string;
+    tokenType?: string;
+    idToken?: string;
+    isAuthSaved?: boolean;
   }
 }

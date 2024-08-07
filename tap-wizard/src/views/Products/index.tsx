@@ -68,18 +68,17 @@ interface IProducts {
 
 const Products: React.FC<IProducts> = ({ id }) => {
   return (
-    <div id={id} className="container mx-auto my-2 py-4">
+    <div id={id} className="container mx-auto mb-2 py-4 bg-gray-100">
       <h2 className="text-center text-2xl font-bold mb-8">Products</h2>
       <div className="w-full relative">
         <Swiper
-          // install Swiper modules
           modules={[Navigation, Pagination, Scrollbar, A11y]}
           spaceBetween={40}
           navigation
           pagination={{ clickable: true }}
           scrollbar={{ draggable: false, hide: true }}
-          onSwiper={(swiper) => console.log(swiper)}
-          onSlideChange={() => console.log("slide change")}
+          onSwiper={(swiper) => {}}
+          onSlideChange={() => {}}
           className="px-6"
           style={{ paddingLeft: "5rem", paddingRight: "5rem" }}
           breakpoints={{

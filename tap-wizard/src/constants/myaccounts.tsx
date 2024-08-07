@@ -2,6 +2,7 @@ import {
   ArrowLeftEndOnRectangleIcon,
   Cog6ToothIcon,
   LinkIcon,
+  CalendarIcon,
 } from "@heroicons/react/24/outline";
 import { ReactNode } from "react";
 
@@ -24,8 +25,13 @@ export const SIDEBAR_MENU_ITEMS = [
     icon: <LinkIcon width={25} />,
   },
   {
-    label: "Logout",
+    label: "Calendar",
     key: "sb-m2",
+    icon: <CalendarIcon width={25} />,
+  },
+  {
+    label: "Logout",
+    key: "sb-m3",
     icon: <ArrowLeftEndOnRectangleIcon width={25} />,
   },
 ];
