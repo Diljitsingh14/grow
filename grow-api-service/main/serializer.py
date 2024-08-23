@@ -2,7 +2,7 @@ import logging
 from .models import OAuthAccount
 from rest_framework import serializers
 from rest_framework.fields import empty
-from .models import Business, Address, Coordinates, Clients
+from .models import Business, Address, Coordinates, Clients, SocialProfile
 from rest_framework.validators import UniqueTogetherValidator
 
 
@@ -89,7 +89,15 @@ class BusinessSerializer(serializers.ModelSerializer):
 logger = logging.getLogger(__name__)
 
 
+class SocialProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialProfile
+        fields = '__all__'
+
+
 class OAuthAccountSerializer(serializers.ModelSerializer):
+    social_profile = SocialProfileSerializer(read_only=True)
+
     class Meta:
         model = OAuthAccount
         fields = '__all__'

@@ -83,6 +83,50 @@ class Click_Counter(models.Model):
     # clicks = models.PositiveBigIntegerField(default=0,null=False,blank=False)
 
 
+class SocialProfile(models.Model):
+    # 1. iss: Issuer identifier
+    iss = models.CharField(max_length=255)
+
+    # 2. azp: Authorized party - the party to which the ID Token was issued
+    azp = models.CharField(max_length=255)
+
+    # 3. aud: Audience - the intended audience for the ID Token
+    aud = models.CharField(max_length=255)
+
+    # 4. sub: Subject - identifier for the user
+    sub = models.CharField(max_length=255, unique=True)
+
+    # 5. email: User's email address
+    email = models.EmailField()
+
+    # 6. email_verified: Boolean to check if the email is verified
+    email_verified = models.BooleanField()
+
+    # 7. at_hash: Access Token hash
+    at_hash = models.CharField(max_length=255, blank=True, null=True)
+
+    # 8. name: Full name of the user
+    name = models.CharField(max_length=255, blank=True, null=True)
+
+    # 9. picture: URL to the user's profile picture
+    picture = models.URLField(max_length=500, blank=True, null=True)
+
+    # 10. given_name: User's first name
+    given_name = models.CharField(max_length=255, blank=True, null=True)
+
+    # 11. family_name: User's last name
+    family_name = models.CharField(max_length=255, blank=True, null=True)
+
+    # 12. iat: Issued At - time at which the JWT was issued
+    iat = models.IntegerField()
+
+    # 13. exp: Expiration time of the JWT
+    exp = models.IntegerField()
+
+    def __str__(self):
+        return self.email
+
+
 class OAuthAccount(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='oauth_accounts')
@@ -93,6 +137,11 @@ class OAuthAccount(models.Model):
     scope = models.TextField()
     token_type = models.CharField(max_length=255)
     id_token = models.TextField()
+
+    # Add a ForeignKey to SocialProfile
+    social_profile = models.ForeignKey(
+        'SocialProfile', on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
         return f"{self.provider} account for {self.user.username}"

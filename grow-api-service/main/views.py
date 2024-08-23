@@ -3,13 +3,13 @@ from django.shortcuts import render, redirect
 from django.http import response, Http404, JsonResponse
 from django.contrib.auth import logout
 
-from .models import Business, Address, Coordinates, Clients, Redirection, OAuthAccount
-from .serializer import BusinessSerializer, AddressSerializer, ClientSerialize, OAuthAccountSerializer
+from .models import Business, Address, Coordinates, Clients, Redirection, OAuthAccount, SocialProfile
+from .serializer import BusinessSerializer, AddressSerializer, ClientSerialize, OAuthAccountSerializer, SocialProfileSerializer
 
 from rest_framework import viewsets, response, serializers
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.generics import ListCreateAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -119,6 +119,12 @@ class OAuthAccountListCreateView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class SocialProfileCreateAPIView(CreateAPIView):
+    queryset = SocialProfile.objects.all()
+    serializer_class = SocialProfileSerializer
+    permission_classes = [AllowAny]
 
 
 @login_required

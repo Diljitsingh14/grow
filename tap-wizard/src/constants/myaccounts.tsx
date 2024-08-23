@@ -7,7 +7,11 @@ import {
 import { ReactNode } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import {
+  faGoogle,
+  faFacebook,
+  faWpforms,
+} from "@fortawesome/free-brands-svg-icons";
 import {
   faCalendarDays,
   faNetworkWired,
@@ -30,8 +34,13 @@ export const SIDEBAR_MENU_ITEMS = [
     icon: <CalendarIcon width={25} />,
   },
   {
+    label: "Forms",
+    key: "sb-fm2",
+    icon: <FontAwesomeIcon icon={faWpforms} width={25} />,
+  },
+  {
     label: "Logout",
-    key: "sb-m3",
+    key: "sb-m3-logout",
     icon: <ArrowLeftEndOnRectangleIcon width={25} />,
   },
 ];

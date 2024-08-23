@@ -3,6 +3,7 @@ import { SIDEBAR_MENU_ITEMS } from "@/constants/myaccounts";
 import { AUTH_API } from "@/constants/urls";
 import { logout } from "@/utils/common/logout";
 import axiosInstance from "@/utils/http/axiosInstance";
+import MyForms from "@/views/Forms";
 import ConnectAccountsView from "@/views/MyAccount/ConnectApps";
 import Sidebar from "@/views/MyAccount/SideBar";
 import { useSession, signOut } from "next-auth/react";
@@ -18,11 +19,27 @@ const MainContent: React.FC<MainContentProps> = ({ selectedTab }) => {
   );
   const { data: session, update } = useSession();
 
+  const saveSocialProfile = async (data: any) => {
+    try {
+      const response = await axiosInstance.post(AUTH_API.SOCIAL_PROFILE, {
+        ...data,
+      });
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
+
   const saveOauthAccounts = async (data: any) => {
     try {
+      const { id } = await saveSocialProfile(data?.profile);
+      console.log(id);
+      alert(id);
       const response = await axiosInstance.post(
         AUTH_API.CONNECT_OAUTH_ACCOUNT,
         {
+          social_profile: id,
           provider: data?.provider,
           provider_account_id: data?.id,
           access_token: data?.accessToken,
@@ -50,7 +67,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedTab }) => {
 
   const handleTabChange = (key: string) => {
     setCurrentTab(key);
-    if (key == SIDEBAR_MENU_ITEMS[3].key) {
+    if (key == "sb-m3-logout") {
       logout();
     }
   };
@@ -67,7 +84,11 @@ const MainContent: React.FC<MainContentProps> = ({ selectedTab }) => {
     case SIDEBAR_MENU_ITEMS[2].key:
       content = <MyCalendar />;
       break;
+
     case SIDEBAR_MENU_ITEMS[3].key:
+      content = <MyForms />;
+      break;
+    case SIDEBAR_MENU_ITEMS[4].key:
       content = <div>Log Out Content</div>;
       break;
     default:

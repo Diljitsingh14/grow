@@ -1,3 +1,4 @@
+import { IProfile } from "@/types/next-auth";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -23,15 +24,15 @@ const authOptions: NextAuthOptions = {
   ],
   secret: NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ account, profile, user }) {
+    async signIn({ profile }) {
       if (!profile?.email) {
         throw new Error("No profile");
       }
 
       return true;
     },
-    async jwt({ token, account }) {
-      if (account) {
+    async jwt({ token, account, profile }) {
+      if (account && profile) {
         token.accessToken = account.access_token as string | undefined;
         token.id = account.providerAccountId as string | undefined;
         token.provider = account.provider as string | undefined;
@@ -40,6 +41,7 @@ const authOptions: NextAuthOptions = {
         token.tokenType = account.token_type as string | undefined;
         token.idToken = account.id_token as string | undefined;
         token.isAuthSaved = false;
+        token.profile = profile;
       }
       return token;
     },
@@ -52,6 +54,7 @@ const authOptions: NextAuthOptions = {
       session.tokenType = token.tokenType as string | undefined;
       session.idToken = token.idToken as string | undefined;
       session.isAuthSaved = false;
+      session.profile = token.profile as IProfile | undefined;
       return session;
     },
   },
