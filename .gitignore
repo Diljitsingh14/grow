@@ -41,3 +41,5 @@
 *.tsbuildinfo
 next-env.d.ts
 
+grow-api-service/.env.local
+grow-api-service/db.sqlite3

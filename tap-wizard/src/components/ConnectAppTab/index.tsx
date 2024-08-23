@@ -57,14 +57,17 @@ const ConnectAppTab: React.FC<TConnectAppTab> = ({
         </DisclosureButton>
         <DisclosurePanel className="mt-2 text-sm/5 text-white/50 border-t-2 py-2 my-2">
           {account.isMultiAccount &&
-            account.connectedAccounts.map((acc) => (
-              <div key={`${acc.id}`}>
-                {acc.name}
-                <Button>Disconnect</Button>
+            connectedAccounts?.length &&
+            connectedAccounts.map((acc) => (
+              <div key={`${acc.provider_account_id}`}>
+                {acc.provider_account_id}
+                <Button className="inline-flex items-center gap-2 rounded-md bg-white float-right py-1 px-3 text-xs font-semibold text-red-500 shadow-inner shadow-white/10 focus:outline-none data-[hover]:text-white data-[hover]:bg-blue-400 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white">
+                  Disconnect
+                </Button>
               </div>
             ))}
 
-          {account.connectedAccounts.length == 0 && (
+          {connectedAccounts?.length == 0 && (
             <p className="text-xs">No Account connected</p>
           )}
         </DisclosurePanel>
