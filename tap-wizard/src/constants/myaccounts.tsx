@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faCalendarDays,
+  faMagnet,
   faNetworkWired,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -39,23 +40,16 @@ export const SIDEBAR_MENU_ITEMS = [
     icon: <FontAwesomeIcon icon={faWpforms} width={25} />,
   },
   {
+    label: "Leads",
+    key: "sb-leads-ss223",
+    icon: <FontAwesomeIcon icon={faMagnet} width={25} />,
+  },
+  {
     label: "Logout",
     key: "sb-m3-logout",
     icon: <ArrowLeftEndOnRectangleIcon width={25} />,
   },
 ];
-
-export interface IConnectApps {
-  label: string;
-  key: string;
-  theme: {
-    background: string;
-    textColor: string;
-  };
-  icon: ReactNode;
-  isMultiAccount: boolean;
-  connectedAccounts: any[];
-}
 
 export const CONNECT_APPS_TYPES = {
   facebook: {

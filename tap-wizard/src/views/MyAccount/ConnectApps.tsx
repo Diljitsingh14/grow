@@ -7,6 +7,7 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { signIn } from "next-auth/react";
 import axiosInstance from "@/utils/http/axiosInstance";
 import { AUTH_API } from "@/constants/urls";
+import { fetchConnectedOAuthAccounts } from "@/utils/services/turnx/accounts";
 
 const ConnectAccountsView = () => {
   const [connectedAccounts, setConnectedAccounts] = useState<any[]>([]);
@@ -19,10 +20,7 @@ const ConnectAccountsView = () => {
 
   const fetchConnectedAccounts = async () => {
     try {
-      const response = await axiosInstance.get(
-        `${AUTH_API.CONNECT_OAUTH_ACCOUNT}`
-      );
-
+      const response = await fetchConnectedOAuthAccounts();
       if (response.status == 200) setConnectedAccounts(response.data);
     } catch (err) {
       console.log(err);
@@ -32,6 +30,19 @@ const ConnectAccountsView = () => {
   useEffect(() => {
     fetchConnectedAccounts();
   }, []);
+
+  const handleDisconnect = async (accountId: string) => {
+    // Handle disconnect logic
+    const url = `${AUTH_API.CONNECT_OAUTH_ACCOUNT}${accountId}/`;
+    try {
+      const res = await axiosInstance.delete(url);
+      if (res.status == 204) {
+        await fetchConnectedAccounts();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="container">
@@ -44,6 +55,7 @@ const ConnectAccountsView = () => {
       <ConnectAppTab
         accountType={CONNECT_APPS_TYPES.google.key}
         connectedAccounts={connectedAccounts}
+        onClickDisconnect={handleDisconnect}
         onClickConnect={() => signIn("google", { callbackUrl: "/my_account" })}
       ></ConnectAppTab>
       <ConnectAppTab></ConnectAppTab>
