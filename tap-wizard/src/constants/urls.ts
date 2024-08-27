@@ -24,4 +24,6 @@ export const TURNX_API = {
   PUBLISH_FORM_VIEW: `${HOST}/api/turnx/connected-form/`,
 
   LEAD_RESPONSE: `${HOST}/api/turnx/lead-responses/`,
+
+  LEAD_CONFIRM: `${HOST}/api/turnx/lead-responses/#LEAD_ID#/consume-lead/`,
 };

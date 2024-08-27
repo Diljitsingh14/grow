@@ -62,6 +62,7 @@ const SetupForm: React.FC<SetupFormProps> = ({
       console.log(response);
       if (response.status == 201) {
         const { data: public_link_uuid } = response;
+        console.log(response);
         setPublicUrl(`${PUBLIC_FORM_URL_PREFIX}${public_link_uuid}`);
         setIsSetupComplete(true);
       }

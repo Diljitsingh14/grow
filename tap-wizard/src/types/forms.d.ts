@@ -35,3 +35,9 @@ export interface ILead {
   lead_name: string | null;
   lead_email: string | null;
 }
+
+export interface ILeadConsumeRequestData {
+  id: string | number;
+  status: "Accepted" | "Declined";
+  message?: string;
+}

@@ -24,7 +24,7 @@ const authOptions: NextAuthOptions = {
   ],
   secret: NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ profile }) {
+    async signIn({ profile, account, credentials }) {
       if (!profile?.email) {
         throw new Error("No profile");
       }

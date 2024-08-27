@@ -1,4 +1,5 @@
 import { TURNX_API } from "@/constants/urls";
+import { ILeadConsumeRequestData } from "@/types/forms";
 import axiosInstance from "@/utils/http/axiosInstance";
 
 export const fetchMasterFromTemplates = async () => {
@@ -27,4 +28,9 @@ export const submitFormResponses = async (data: any) => {
 
 export const fetchLeads = async () => {
   return axiosInstance.get(TURNX_API.LEAD_RESPONSE);
+};
+
+export const consumeLead = async (data: ILeadConsumeRequestData) => {
+  const url = TURNX_API.LEAD_CONFIRM.replace("#LEAD_ID#", `${data.id}`);
+  return axiosInstance.post(url, { ...data });
 };

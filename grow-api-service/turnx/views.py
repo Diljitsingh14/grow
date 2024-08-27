@@ -9,6 +9,14 @@ from rest_framework.response import Response
 from rest_framework.exceptions import APIException, NotFound, ValidationError
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.decorators import action
+
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+
+# To use settings like GOOGLE_API_TOKEN and CLIENT_SECRET
+from django.conf import settings
+
 
 # Create your views here.
 
@@ -205,3 +213,85 @@ class LeadResponseViewSet(ModelViewSet):
             lead_name=lead_name,
             lead_email=lead_email
         )
+
+    @action(detail=True, methods=['post'], url_path='consume-lead')
+    def consume_lead(self, request, pk=None):
+        """
+        Consume a lead by changing its status to accepted or declined.
+        If accepted, schedule an event in the client's Google Calendar.
+        """
+        lead_response = self.get_object()
+        status_update = request.data.get('status', 'Pending')
+        if status_update not in ['Accepted', 'Declined']:
+            return Response(
+                {"detail": "Invalid status. Must be 'Accepted' or 'Declined'."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if status_update == 'Accepted':
+            try:
+                # Schedule an event in Google Calendar
+                self.schedule_google_calendar_event(lead_response)
+                lead_response.status = 'Scheduled'
+                lead_response.pushed_to_google = True
+                lead_response.save()
+                return Response({"detail": "Lead accepted and event scheduled."}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        else:
+            lead_response.status = 'Declined'
+            lead_response.save()
+            return Response({"detail": "Lead declined."}, status=status.HTTP_200_OK)
+
+    def schedule_google_calendar_event(self, lead_response):
+        """
+        Schedules an event in Google Calendar for the lead's connected form's account.
+        """
+        # Extract the OAuth account from the connected form
+        oauth_account = lead_response.connected_form.account
+        if not oauth_account or not oauth_account.access_token:
+            raise ValueError("No valid OAuth account or access token found.")
+
+        # Extract date, time, and description from form_response
+        form_response = lead_response.form_response
+        date, time, description = None, None, ""
+        for item in form_response:
+            if item.get('name') == 'booking_date':
+                date = item.get('response')
+            elif item.get('name') == 'booking_time':
+                time = item.get('response')
+            elif item.get('name') == 'special_requests':
+                description = item.get('response')
+
+        if not date or not time:
+            raise ValueError("Date or time not provided in the form response.")
+
+        # Combine date and time for event start and end
+        start_datetime = f"{date}T{time}:00"
+        end_datetime = f"{date}T{time}:50"  # Adjust duration as needed
+
+        credentials = Credentials(
+            token=oauth_account.access_token,
+            refresh_token=oauth_account.id_token,  # Add refresh token logic if needed
+            token_uri='https://oauth2.googleapis.com/token',
+            client_id=settings.GOOGLE_CLIENT_ID,
+            client_secret=settings.GOOGLE_CLIENT_SECRET,
+        )
+
+        service = build('calendar', 'v3', credentials=credentials)
+
+        event = {
+            'summary': lead_response.connected_form.form_template.name,
+            'description': description,
+            'start': {
+                'dateTime': start_datetime,
+                'timeZone': 'UTC',  # Adjust for correct timezone
+            },
+            'end': {
+                'dateTime': end_datetime,
+                'timeZone': 'UTC',  # Adjust for correct timezone
+            },
+        }
+
+        service.events().insert(calendarId='primary', body=event).execute()

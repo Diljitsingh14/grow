@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { IFormField, ILead } from "@/types/forms"; // Ensure this type matches the structure of your data
-import { fetchLeads } from "@/utils/services/turnx/forms";
+import { consumeLead, fetchLeads } from "@/utils/services/turnx/forms";
 import { FaArchive, FaSearch } from "react-icons/fa";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import Pagination from "@/components/Pagination"; // Assume you have a Pagination component
@@ -52,7 +52,16 @@ const ViewLeads: React.FC = () => {
 
   const onArchive = (id: any) => {};
 
-  const onChangeStatus = (id: any, status: any) => {};
+  const onChangeStatus = async (id: string, status: any) => {
+    try {
+      const response = await consumeLead({ id, status: status });
+      if (response.status == 200) {
+        await getLeads();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const confirmArchive = async (id: number) => {
     try {
@@ -66,12 +75,12 @@ const ViewLeads: React.FC = () => {
 
   const handleStatusChange = async (status: string) => {
     if (selectedLead) {
-      await onChangeStatus(selectedLead.id, status);
-      setLeads((prevLeads) =>
-        prevLeads.map((lead) =>
-          lead.id === selectedLead.id ? { ...lead, status } : lead
-        )
-      );
+      await onChangeStatus(`${selectedLead.id}`, status);
+      // setLeads((prevLeads) =>
+      //   prevLeads.map((lead) =>
+      //     lead.id === selectedLead.id ? { ...lead, status } : lead
+      //   )
+      // );
       closeModal();
     }
   };
