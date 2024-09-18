@@ -7,9 +7,14 @@ import {
 import { ReactNode } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import {
+  faGoogle,
+  faFacebook,
+  faWpforms,
+} from "@fortawesome/free-brands-svg-icons";
 import {
   faCalendarDays,
+  faMagnet,
   faNetworkWired,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -30,23 +35,21 @@ export const SIDEBAR_MENU_ITEMS = [
     icon: <CalendarIcon width={25} />,
   },
   {
+    label: "Forms",
+    key: "sb-fm2",
+    icon: <FontAwesomeIcon icon={faWpforms} width={25} />,
+  },
+  {
+    label: "Leads",
+    key: "sb-leads-ss223",
+    icon: <FontAwesomeIcon icon={faMagnet} width={25} />,
+  },
+  {
     label: "Logout",
-    key: "sb-m3",
+    key: "sb-m3-logout",
     icon: <ArrowLeftEndOnRectangleIcon width={25} />,
   },
 ];
-
-export interface IConnectApps {
-  label: string;
-  key: string;
-  theme: {
-    background: string;
-    textColor: string;
-  };
-  icon: ReactNode;
-  isMultiAccount: boolean;
-  connectedAccounts: any[];
-}
 
 export const CONNECT_APPS_TYPES = {
   facebook: {

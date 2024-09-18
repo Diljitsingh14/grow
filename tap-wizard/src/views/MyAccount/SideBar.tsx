@@ -23,7 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedTab, onChangeTab }) => {
             <img
               src="/images/logo/brand-light.png"
               alt="turnx "
-              className="w-full h-[70px]"
+              className="w-full"
             />
           </Link>
         )}

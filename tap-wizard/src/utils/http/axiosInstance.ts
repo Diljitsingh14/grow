@@ -4,6 +4,8 @@ import { AUTH_API } from "@/constants/urls";
 import axios from "axios";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
+const RETRY_FLAG = false;
+
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
@@ -21,7 +23,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status == 401 && !originalRequest._retry) {
+    if (error.response.status == 401 && !originalRequest._retry && RETRY_FLAG) {
       originalRequest._retry = true;
       const refreshToken = getCookie(TOKENS.REFRESH);
 
@@ -31,6 +33,7 @@ axiosInstance.interceptors.response.use(
         });
 
         const { access } = response.data;
+        console.log("Retry access token get is:", access);
         setCookie(TOKENS.ACCESS, access);
         axiosInstance.defaults.headers.common[
           "Authorization"

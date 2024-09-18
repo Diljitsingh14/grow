@@ -3,13 +3,13 @@ from django.shortcuts import render, redirect
 from django.http import response, Http404, JsonResponse
 from django.contrib.auth import logout
 
-from .models import Business, Address, Coordinates, Clients, Redirection, OAuthAccount
-from .serializer import BusinessSerializer, AddressSerializer, ClientSerialize, OAuthAccountSerializer
+from .models import Business, Address, Coordinates, Clients, Redirection, OAuthAccount, SocialProfile
+from .serializer import BusinessSerializer, AddressSerializer, ClientSerialize, OAuthAccountSerializer, SocialProfileSerializer
 
 from rest_framework import viewsets, response, serializers
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.generics import ListCreateAPIView, CreateAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -118,11 +118,63 @@ class OAuthAccountListCreateView(ListCreateAPIView):
         return OAuthAccount.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        print("Request data:", self.request.data)
-        print("Authenticated user:", self.request.user)
-        serializer.save(user=self.request.user)
+        social_profile_id = self.request.data.get('social_profile')
+
+        if social_profile_id:
+            # Ensure the social_profile instance exists
+            social_profile = SocialProfile.objects.get(id=social_profile_id)
+            serializer.save(user=self.request.user,
+                            social_profile=social_profile)
+        else:
+            # Save without social_profile if not provided
+            serializer.save(user=self.request.user)
 
 
-@login_required
+class OAuthAccountRetrieveDestroyView(RetrieveDestroyAPIView):
+    queryset = OAuthAccount.objects.all()
+    serializer_class = OAuthAccountSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Filter queryset to only include the user's OAuth accounts
+        return super().get_queryset().filter(user=self.request.user)
+
+
+class SocialProfileCreateAPIView(CreateAPIView):
+    queryset = SocialProfile.objects.all()
+    serializer_class = SocialProfileSerializer
+    permission_classes = [AllowAny]
+
+    def get_object(self):
+        """
+        Try to get a SocialProfile instance by email or sub.
+        """
+        email = self.request.data.get('email')
+        sub = self.request.data.get('sub')
+
+        # Check if a SocialProfile exists with the given email or sub
+        try:
+            return SocialProfile.objects.get(email=email) if email else SocialProfile.objects.get(sub=sub)
+        except SocialProfile.DoesNotExist:
+            return None
+
+    def post(self, request, *args, **kwargs):
+        social_profile = self.get_object()
+
+        if social_profile:
+            # Update the existing social profile
+            serializer = self.get_serializer(social_profile, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Create a new social profile
+            return self.create(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+
+@ login_required
 def ping(request):
     return JsonResponse({"message": "pong", "user": request.user.username})

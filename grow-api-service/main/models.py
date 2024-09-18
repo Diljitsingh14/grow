@@ -55,8 +55,34 @@ class Business(models.Model):
     business_desc = models.CharField(max_length=1000, null=True, blank=True)
     business_type = models.CharField(max_length=100, null=True, blank=True)
 
+    logo = models.ImageField(upload_to='logos/', blank=True, null=True)
+    business_hours = models.CharField(max_length=255, blank=True, null=True)
+    business_days = models.JSONField(default=dict, blank=True, null=True)
+    insta_account_link = models.URLField(blank=True, null=True)
+    facebook_account_link = models.URLField(blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+
     def __str__(self) -> str:
         return self.business_name
+
+    def get_business_days(self):
+        days = {
+            's': 'Sunday',
+            'm': 'Monday',
+            't': 'Tuesday',
+            'w': 'Wednesday',
+            'th': 'Thursday',
+            'f': 'Friday',
+            's': 'Saturday',
+        }
+        return {day: name for day, name in days.items() if self.business_days.get(day, False)}
+
+    def set_business_days(self, days_list):
+        valid_days = ['s', 'm', 't', 'w', 'th', 'f', 's']
+        self.business_days = {day: day in days_list for day in valid_days}
+        self.save()
 
     class Meta:
         unique_together = ["owner", "business_address"]
@@ -83,16 +109,66 @@ class Click_Counter(models.Model):
     # clicks = models.PositiveBigIntegerField(default=0,null=False,blank=False)
 
 
+class SocialProfile(models.Model):
+    # 1. iss: Issuer identifier
+    iss = models.CharField(max_length=255)
+
+    # 2. azp: Authorized party - the party to which the ID Token was issued
+    azp = models.CharField(max_length=255)
+
+    # 3. aud: Audience - the intended audience for the ID Token
+    aud = models.CharField(max_length=255)
+
+    # 4. sub: Subject - identifier for the user
+    sub = models.CharField(max_length=255, unique=True)
+
+    # 5. email: User's email address
+    email = models.EmailField()
+
+    # 6. email_verified: Boolean to check if the email is verified
+    email_verified = models.BooleanField()
+
+    # 7. at_hash: Access Token hash
+    at_hash = models.CharField(max_length=255, blank=True, null=True)
+
+    # 8. name: Full name of the user
+    name = models.CharField(max_length=255, blank=True, null=True)
+
+    # 9. picture: URL to the user's profile picture
+    picture = models.URLField(max_length=500, blank=True, null=True)
+
+    # 10. given_name: User's first name
+    given_name = models.CharField(max_length=255, blank=True, null=True)
+
+    # 11. family_name: User's last name
+    family_name = models.CharField(max_length=255, blank=True, null=True)
+
+    # 12. iat: Issued At - time at which the JWT was issued
+    iat = models.IntegerField()
+
+    # 13. exp: Expiration time of the JWT
+    exp = models.IntegerField()
+
+    def __str__(self):
+        return self.email
+
+
 class OAuthAccount(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='oauth_accounts')
     provider = models.CharField(max_length=255)
     provider_account_id = models.CharField(max_length=255, unique=True)
     access_token = models.TextField()
-    expires_at = models.IntegerField()
+    refresh_token = models.TextField()
+    expires_at = models.BigIntegerField()
     scope = models.TextField()
     token_type = models.CharField(max_length=255)
     id_token = models.TextField()
+
+    # Add a ForeignKey to SocialProfile
+    social_profile = models.ForeignKey(
+        'SocialProfile', on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
         return f"{self.provider} account for {self.user.username}"
