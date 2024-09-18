@@ -18,6 +18,7 @@ const PublicFormView: React.FC<PublicFormViewProps> = () => {
   const [fullTemplate, setFullTemplate] = useState<any>(null);
   const [formTemplate, setFormTemplate] = useState<ITemplate | null>(null);
   const [formFields, setFormFields] = useState<IFormField[]>([]);
+  const [availableSlots, setAvailableSlots] = useState<any>([]);
   const [formTheme, setFormTheme] = useState<ITheme>(DEFAULT_FORM_THEME);
   const [isLoading, setIsLoading] = useState(true);
   const [isFormActive, setIsFormActive] = useState(false);
@@ -32,6 +33,8 @@ const PublicFormView: React.FC<PublicFormViewProps> = () => {
           setFormTemplate(data.form_template);
           setFormFields(data.form_template.fields);
           setFormTheme(data.form_theme);
+          setAvailableSlots(data.available_slots);
+          console.log(data.available_slots);
           setIsFormActive(true);
         } else {
           setIsFormActive(false);
@@ -111,6 +114,7 @@ const PublicFormView: React.FC<PublicFormViewProps> = () => {
           theme={formTheme}
           fields={formFields}
           isPreview={false}
+          availableSlots={availableSlots}
         />
       </div>
     </div>

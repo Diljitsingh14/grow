@@ -27,6 +27,4 @@ urlpatterns = [
     path('connected-form/<uuid:uuid>/',
          ConnectedFormPublicRetrieveAPIView.as_view(), name='connected_form_detail'),
 
-
-
 ]

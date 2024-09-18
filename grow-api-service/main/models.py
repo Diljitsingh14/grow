@@ -55,8 +55,34 @@ class Business(models.Model):
     business_desc = models.CharField(max_length=1000, null=True, blank=True)
     business_type = models.CharField(max_length=100, null=True, blank=True)
 
+    logo = models.ImageField(upload_to='logos/', blank=True, null=True)
+    business_hours = models.CharField(max_length=255, blank=True, null=True)
+    business_days = models.JSONField(default=dict, blank=True, null=True)
+    insta_account_link = models.URLField(blank=True, null=True)
+    facebook_account_link = models.URLField(blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True)
+
     def __str__(self) -> str:
         return self.business_name
+
+    def get_business_days(self):
+        days = {
+            's': 'Sunday',
+            'm': 'Monday',
+            't': 'Tuesday',
+            'w': 'Wednesday',
+            'th': 'Thursday',
+            'f': 'Friday',
+            's': 'Saturday',
+        }
+        return {day: name for day, name in days.items() if self.business_days.get(day, False)}
+
+    def set_business_days(self, days_list):
+        valid_days = ['s', 'm', 't', 'w', 'th', 'f', 's']
+        self.business_days = {day: day in days_list for day in valid_days}
+        self.save()
 
     class Meta:
         unique_together = ["owner", "business_address"]
@@ -133,7 +159,8 @@ class OAuthAccount(models.Model):
     provider = models.CharField(max_length=255)
     provider_account_id = models.CharField(max_length=255, unique=True)
     access_token = models.TextField()
-    expires_at = models.IntegerField()
+    refresh_token = models.TextField()
+    expires_at = models.BigIntegerField()
     scope = models.TextField()
     token_type = models.CharField(max_length=255)
     id_token = models.TextField()

@@ -18,6 +18,8 @@ const authOptions: NextAuthOptions = {
         params: {
           scope:
             "openid email profile https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
+          access_type: "offline", // This requests a refresh token
+          prompt: "consent", // Ensure consent screen is shown every time to get refresh token
         },
       },
     }),
@@ -32,6 +34,7 @@ const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, account, profile }) {
+      console.log(account, account);
       if (account && profile) {
         token.accessToken = account.access_token as string | undefined;
         token.id = account.providerAccountId as string | undefined;
@@ -40,6 +43,7 @@ const authOptions: NextAuthOptions = {
         token.scope = account.scope as string | undefined;
         token.tokenType = account.token_type as string | undefined;
         token.idToken = account.id_token as string | undefined;
+        token.refreshToken = account.refresh_token as string | undefined;
         token.isAuthSaved = false;
         token.profile = profile;
       }
@@ -53,6 +57,7 @@ const authOptions: NextAuthOptions = {
       session.scope = token.scope as string | undefined;
       session.tokenType = token.tokenType as string | undefined;
       session.idToken = token.idToken as string | undefined;
+      session.refreshToken = token.refreshToken as string | undefined;
       session.isAuthSaved = false;
       session.profile = token.profile as IProfile | undefined;
       return session;

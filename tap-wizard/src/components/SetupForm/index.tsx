@@ -61,9 +61,8 @@ const SetupForm: React.FC<SetupFormProps> = ({
       const response = await connectFormWithOauthAccount(data);
       console.log(response);
       if (response.status == 201) {
-        const { data: public_link_uuid } = response;
-        console.log(response);
-        setPublicUrl(`${PUBLIC_FORM_URL_PREFIX}${public_link_uuid}`);
+        const { data } = response;
+        setPublicUrl(`${PUBLIC_FORM_URL_PREFIX}${data.public_link_uuid}`);
         setIsSetupComplete(true);
       }
     } catch (error) {

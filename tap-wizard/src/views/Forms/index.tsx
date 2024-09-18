@@ -1,14 +1,18 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { fetchFormTemplates } from "@/utils/services/turnx/forms";
+import {
+  fetchConnectedForms,
+  fetchFormTemplates,
+} from "@/utils/services/turnx/forms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleNodes,
   faFileInvoice,
   faFolder,
 } from "@fortawesome/free-solid-svg-icons";
-import { IFormField, ITemplate } from "@/types/forms";
+import { IConnectedForm, IFormField, ITemplate } from "@/types/forms";
 import FormTemplate from "@/components/FormTemplate";
+import { PUBLIC_FORM_URL_PREFIX } from "@/constants/routes";
 
 // Define the interfaces for fields and templates
 
@@ -136,7 +140,9 @@ import FormTemplate from "@/components/FormTemplate";
 // Component to render the list of form templates
 const MyForms: React.FC = () => {
   const [formTemplates, setFormTemplates] = useState<ITemplate[]>([]);
+  const [connectedForms, setConnectedForms] = useState<IConnectedForm[]>([]); // State for connected forms
 
+  // Fetch form templates
   const fetchTemplates = async () => {
     try {
       const { data } = await fetchFormTemplates();
@@ -146,8 +152,19 @@ const MyForms: React.FC = () => {
     }
   };
 
+  // Fetch connected forms
+  const fetchConnectedFormsData = async () => {
+    try {
+      const { data } = await fetchConnectedForms(); // Assuming this is how you fetch connected forms
+      setConnectedForms(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchTemplates();
+    fetchConnectedFormsData(); // Fetch connected forms on component mount
   }, []);
 
   return (
@@ -156,8 +173,8 @@ const MyForms: React.FC = () => {
       <h3 className="text-xl py-2 px-4 bg-blue-500 text-white mb-5">
         <FontAwesomeIcon icon={faFileInvoice} className="mr-2" /> Form Templates
       </h3>
-      {/* Grid layout for templates */}
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> */}
+
+      {/* Form Templates Grid */}
       {formTemplates.length ? (
         <FormTemplate templates={formTemplates} />
       ) : (
@@ -165,12 +182,44 @@ const MyForms: React.FC = () => {
           Sorry, no Templates found!
         </h1>
       )}
-      {/* </div> */}
 
+      {/* Connected Forms Section Header */}
       <h3 className="text-xl py-2 px-4 bg-purple-500 text-white my-5">
         <FontAwesomeIcon icon={faCircleNodes} className="mr-2" /> Connected
         Forms
       </h3>
+
+      {/* Connected Forms Grid */}
+      {connectedForms.length ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {connectedForms.map((form) => (
+            <div key={form.id} className="border p-4 rounded shadow">
+              <h4 className="text-lg font-bold mb-2">{form.form_theme.name}</h4>
+              <p className="text-sm text-gray-600">Status: {form.status}</p>
+              <p className="text-sm text-gray-600">
+                Account: {form.account.social_profile.email}
+              </p>
+              <img
+                src={form.account.social_profile.picture}
+                alt={form.account.social_profile.name}
+                className="w-16 h-16 rounded-full mt-2"
+              />
+              <a
+                href={`${PUBLIC_FORM_URL_PREFIX}${form.public_link_uuid}`}
+                className="text-blue-500 underline mt-2 block"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Form
+              </a>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <h1 className="text-gray-500 text-center text-sm col-span-full">
+          No Connected Forms found!
+        </h1>
+      )}
     </>
   );
 };

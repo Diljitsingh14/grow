@@ -47,6 +47,7 @@ const MainContent: React.FC<MainContentProps> = ({ selectedTab }) => {
           scope: data?.scope,
           token_type: data?.tokenType,
           id_token: data?.idToken,
+          refresh_token: data?.refreshToken,
         }
       );
       if (response.status == 201) {

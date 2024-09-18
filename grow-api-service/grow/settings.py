@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -198,3 +199,12 @@ CORS_ALLOW_METHODS = [
 # Media Setting
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Cron job settings:
+# t = '*/5 * * * *'
+# t2 = '0 * * * *'
+CRONJOBS = [
+    ('*/5 * * * *', 'turnx.cron_jobs.oauth_refresh_token.refresh_google_account_token'),
+    # Add more cron jobs as needed
+]

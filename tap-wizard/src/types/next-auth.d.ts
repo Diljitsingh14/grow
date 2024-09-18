@@ -24,6 +24,7 @@ declare module "next-auth" {
     scope?: string;
     tokenType?: string;
     idToken?: string;
+    refreshToken?: string;
     isAuthSaved?: boolean;
     profile?: IProfile;
   }
@@ -36,6 +37,7 @@ declare module "next-auth" {
     scope?: string;
     tokenType?: string;
     idToken?: string;
+    refreshToken?: string;
     isAuthSaved?: boolean;
     profile: IProfile;
   }

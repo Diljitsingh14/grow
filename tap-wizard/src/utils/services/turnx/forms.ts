@@ -34,3 +34,7 @@ export const consumeLead = async (data: ILeadConsumeRequestData) => {
   const url = TURNX_API.LEAD_CONFIRM.replace("#LEAD_ID#", `${data.id}`);
   return axiosInstance.post(url, { ...data });
 };
+
+export const fetchConnectedForms = async () => {
+  return axiosInstance.get(TURNX_API.CONNECT_FORM);
+};
