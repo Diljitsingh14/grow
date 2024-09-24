@@ -42,4 +42,6 @@
 next-env.d.ts
 
 grow-api-service/.env.local
+grow-api-service/.env
 grow-api-service/db.sqlite3
+grow-api-service/staticfiles/*
