@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  grow:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: grow_backend
+    command: sh -c "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+
+  cron:
+    build: .
+    container_name: grow_cron
+    command: cron -f
+    volumes:
+      - .:/app
+    depends_on:
+      - grow
