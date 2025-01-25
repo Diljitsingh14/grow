@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,8 +10,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import { getProducts } from "@/utils/services/product";
 
-const products: IProduct[] = [
+const PRODUCTS: IProduct[] = [
   {
     name: "generic-google-qr-nfc",
     id: "1",
@@ -67,6 +68,20 @@ interface IProducts {
 }
 
 const Products: React.FC<IProducts> = ({ id }) => {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    // const { data } = await getProducts();
+    // console.log(data);
+    // setProducts(data);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   return (
     <div id={id} className="container mx-auto mb-2 py-4 bg-gray-100">
       <h2 className="text-center text-2xl font-bold mb-8">Products</h2>
@@ -100,7 +115,7 @@ const Products: React.FC<IProducts> = ({ id }) => {
             },
           }}
         >
-          {products.map((product) => (
+          {PRODUCTS.map((product) => (
             <SwiperSlide key={product.id}>
               <Product {...product} />
             </SwiperSlide>

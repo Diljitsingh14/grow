@@ -45,3 +45,7 @@ grow-api-service/.env.local
 grow-api-service/.env
 grow-api-service/db.sqlite3
 grow-api-service/staticfiles/*
+
+/boundless-nextjs-moon-ecommerce-template
+grow-api-service/requirements.txt
+grow-api-service/grow/__pycache__/*

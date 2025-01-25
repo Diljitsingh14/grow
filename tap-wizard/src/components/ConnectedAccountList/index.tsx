@@ -1,11 +1,13 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { isExpire } from "@/utils/common/helper";
 
 // Define the interface for the account data
 interface Account {
   id: string;
   provider: string;
+  expires_at: number;
   social_profile: {
     picture: string;
     name: string;
@@ -71,17 +73,37 @@ const ConnectedAccountList: React.FC<ConnectedAccountListProps> = ({
                     {acc?.social_profile?.name}
                   </span>
                 </div>
-                {!isOnlyView && (
-                  <button
-                    className="text-red-500 hover:text-red-700"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering onClickAccount
-                      if (onClickDisconnect) onClickDisconnect(acc.id);
-                    }}
-                  >
-                    Disconnect
-                  </button>
-                )}
+                <div className="flex-row">
+                  {!isOnlyView && (
+                    <>
+                      <div className="div">
+                        <button
+                          className={`${
+                            isExpire(acc.expires_at)
+                              ? "text-yellow-500 hover:text-yellow-700 border-yellow-400"
+                              : "text-red-500 hover:text-red-700 border-red-400"
+                          } border-2 rounded-lg px-2`}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering onClickAccount
+                            if (onClickDisconnect) onClickDisconnect(acc.id);
+                          }}
+                        >
+                          {isExpire(acc.expires_at)
+                            ? "Reconnect"
+                            : "Disconnect"}
+                        </button>
+                      </div>
+
+                      {isExpire(acc.expires_at) && (
+                        <div className="div">
+                          <span className="text-red-500 text-xs text-left px-2">
+                            Expired
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
               <p className="mt-2 text-sm text-gray-500">
                 {acc?.social_profile?.email}

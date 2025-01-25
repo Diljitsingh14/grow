@@ -4,6 +4,7 @@ import stripe
 
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -132,6 +133,7 @@ class ProductAndServiceViewSet(viewsets.ModelViewSet):
     queryset = ProductAndService.objects.all()
     serializer_class = ProductAndServicesSerializer
     http_method_names = ['get']
+    permission_classes = [AllowAny]
 
 
 class StatusViewSet(viewsets.ModelViewSet):

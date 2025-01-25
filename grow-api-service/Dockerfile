@@ -23,5 +23,8 @@ COPY . /app/
 # Expose the port Django will run on
 # EXPOSE 8000
 
+# Add cron jobs at build time
+RUN python manage.py crontab add
+
 # Ensure cron service is started and then the application runs
 CMD ["cron", "-f"]
