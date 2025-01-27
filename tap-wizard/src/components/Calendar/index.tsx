@@ -31,6 +31,7 @@ interface IncomingEvent {
 
 const MyCalendar: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [currView, setCurrentView] = useState<View>('month');
 
   const fetchEvents = useCallback(async (query: string = "") => {
     try {
@@ -86,7 +87,7 @@ const MyCalendar: React.FC = () => {
   return (
     <>
       <h3 className="text-xl py-2 px-4 bg-blue-500 text-white mb-5">
-        Schedule For This Month
+        Schedule for this {currView}
       </h3>
       <div style={{ height: "700px" }} className="border-2 p-4">
         <Calendar
@@ -96,6 +97,7 @@ const MyCalendar: React.FC = () => {
           endAccessor="end"
           onRangeChange={handleRangeChange}
           style={{ height: "100%" }}
+          onView={setCurrentView}
         />
       </div>
     </>
