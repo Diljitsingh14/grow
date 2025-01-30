@@ -1,5 +1,5 @@
 from django.db import models
-
+from main.models import User
 # Create your models here.
 
 
@@ -156,3 +156,20 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+CART_STATUS_CHOICES = [
+    ('WISH_LIST', 'Wish List'),
+    ('ACTIVE', 'Active'),
+    ('ARCHIVE', 'Archive'),
+]
+
+
+class Cart(models.Model):
+    product = models.ForeignKey('ProductAndService', on_delete=models.SET_NULL,null=True)
+    quantity = models.PositiveIntegerField(default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=
+                              CART_STATUS_CHOICES, default="ACTIVE")
+    promo_code = models.ForeignKey(
+        "PromoCodes", null=True, blank=True, on_delete=models.SET_NULL)

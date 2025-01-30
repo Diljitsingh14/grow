@@ -156,6 +156,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 25,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
@@ -213,3 +215,4 @@ CRONJOBS = [
     ('*/5 * * * *', 'turnx.cron_jobs.oauth_refresh_token.refresh_google_account_token'),
     # Add more cron jobs as needed
 ]
+

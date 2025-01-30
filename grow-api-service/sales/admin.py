@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Order, Status, Discounts, Payments, ProductAndService, PromoCodes, Template, ProductVariant
+from .models import Order, Status, Discounts, Payments, ProductAndService, PromoCodes, Template, ProductVariant,Cart
 
 # Register your models here.
-admin.site.register([Order, Status, Discounts, Payments, PromoCodes, Template])
+admin.site.register([Order, Status, Discounts, Payments, PromoCodes, Template,Cart])
 
 
 class ProductVariantInline(admin.TabularInline):
