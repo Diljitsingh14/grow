@@ -38,3 +38,7 @@ export const consumeLead = async (data: ILeadConsumeRequestData) => {
 export const fetchConnectedForms = async () => {
   return axiosInstance.get(TURNX_API.CONNECT_FORM);
 };
+
+export const fetchGoogleCalendar = async (query: string) => {
+  return axiosInstance.get(TURNX_API.GOOGE_CALENDAR + '?' + query);
+}

@@ -506,10 +506,15 @@ class GoogleCalendarViewSet(ViewSet):
         Fetch Google Calendar events for the current month for all connected accounts.
         """
         connected_accounts = self.get_connected_accounts(request.user)
-        all_events = {}
 
+        start_date_str = request.GET.get('start', None)
+        end_date_str = request.GET.get('end', None)
+
+        start_date, end_date = self.get_start_end_dates(start_date_str, end_date_str)
+
+        all_events = {}
         for account in connected_accounts:
-            events = self.get_google_calendar_events(account)
+            events = self.get_google_calendar_events(account, start_date, end_date)
             all_events[account.provider_account_id] = events
 
         return Response(all_events)
@@ -525,8 +530,30 @@ class GoogleCalendarViewSet(ViewSet):
         # Example: ConnectedGoogleAccount.objects.filter(user=user)
         return accounts
 
+    def get_start_end_dates(self, start_date_str, end_date_str):
+        if start_date_str == None or end_date_str == None:
+            current_date = datetime.utcnow()
+            first_day_of_month = make_aware(
+                datetime(current_date.year, current_date.month, 1), pytz.UTC)
+            next_month = (current_date.month % 12) + 1
+            next_month_year = current_date.year + (1 if next_month == 1 else 0)
+            last_day_of_month = make_aware(
+                datetime(next_month_year, next_month, 1) - timedelta(days=1), pytz.UTC)
+            
+            return first_day_of_month, last_day_of_month
+
+        start_date = datetime.strptime(start_date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+        
+        # Make them timezone-aware (assuming UTC)
+        start_date = make_aware(start_date, pytz.UTC)
+        end_date = make_aware(end_date, pytz.UTC)
+        
+        return start_date, end_date
+
+
     # TODO: COMMON FUNCTION AND COMMON REFRESH LOGIC
-    def get_google_calendar_events(self, account):
+    def get_google_calendar_events(self, account, start_date, end_date):
         """
         Fetch Google Calendar events for a given account.
         """
@@ -553,20 +580,11 @@ class GoogleCalendarViewSet(ViewSet):
 
             service = build('calendar', 'v3', credentials=credentials)
 
-            # Get the current month's first and last day
-            current_date = datetime.utcnow()
-            first_day_of_month = make_aware(
-                datetime(current_date.year, current_date.month, 1), pytz.UTC)
-            next_month = (current_date.month % 12) + 1
-            next_month_year = current_date.year + (1 if next_month == 1 else 0)
-            last_day_of_month = make_aware(
-                datetime(next_month_year, next_month, 1) - timedelta(days=1), pytz.UTC)
-
             # Fetch events from Google Calendar
             events_result = service.events().list(
                 calendarId='primary',
-                timeMin=first_day_of_month.isoformat(),
-                timeMax=last_day_of_month.isoformat(),
+                timeMin=start_date.isoformat(),
+                timeMax=end_date.isoformat(),
                 singleEvents=True,
                 orderBy='startTime'
             ).execute()
