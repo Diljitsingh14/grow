@@ -1,5 +1,5 @@
 from django.db import models
-
+from main.models import User
 # Create your models here.
 
 
@@ -86,7 +86,7 @@ class ProductAndService(models.Model):
         Template, on_delete=models.SET_NULL, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_template_type = models.BooleanField(default=False)
-    image = models.URLField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True)
     quantity_available = models.IntegerField(
         default=0, help_text='Available stock quantity')
     is_featured = models.BooleanField(
@@ -94,6 +94,27 @@ class ProductAndService(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.type}"
+
+
+class ProductVariant(models.Model):
+    product = models.ForeignKey(
+        ProductAndService, related_name='variants', on_delete=models.CASCADE
+    )
+    attribute_name = models.CharField(
+        max_length=100, help_text='e.g., Size, Color')
+    attribute_value = models.CharField(
+        max_length=100, help_text='e.g., Large, Red')
+    additional_price = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00,
+        help_text='Additional price for this variant'
+    )
+    image = models.ImageField(null=True, blank=True)
+    quantity_available = models.IntegerField(
+        default=0, help_text='Stock quantity for this variant'
+    )
+
+    def __str__(self):
+        return f"{self.product.name} - {self.attribute_name}: {self.attribute_value}"
 
 
 class Payments(models.Model):
@@ -135,3 +156,20 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+CART_STATUS_CHOICES = [
+    ('WISH_LIST', 'Wish List'),
+    ('ACTIVE', 'Active'),
+    ('ARCHIVE', 'Archive'),
+]
+
+
+class Cart(models.Model):
+    product = models.ForeignKey('ProductAndService', on_delete=models.SET_NULL,null=True)
+    quantity = models.PositiveIntegerField(default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=
+                              CART_STATUS_CHOICES, default="ACTIVE")
+    promo_code = models.ForeignKey(
+        "PromoCodes", null=True, blank=True, on_delete=models.SET_NULL)

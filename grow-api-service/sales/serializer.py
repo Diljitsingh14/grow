@@ -1,11 +1,19 @@
 from rest_framework import serializers
-from .models import Order, Discounts, ProductAndService, Status
+from .models import *
 
 from main.serializer import BusinessSerializer
 from main.models import Business
 
 
+class ProductVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariant
+        fields = ['id', 'attribute_name', 'attribute_value',
+                  'additional_price', 'quantity_available']
+
+
 class ProductAndServicesSerializer(serializers.ModelSerializer):
+    variants = ProductVariantSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProductAndService
@@ -45,3 +53,9 @@ class StatusSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Status
         fields = "__all__"
+
+class CartSerializer(serializers.ModelSerializer):
+     
+    class Meta:
+        model = Cart
+        fields = '__all__'

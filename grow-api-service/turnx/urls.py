@@ -9,6 +9,9 @@ router.register(r'connected-forms', ConnectedFormViewSet,
 router.register(r'lead-responses', LeadResponseViewSet,
                 basename='leadresponse')
 
+router.register(r'google-calendar', GoogleCalendarViewSet,
+                basename='google-calendar')
+
 
 urlpatterns = [
     path("form-templates/", FormTemplateListView.as_view(),

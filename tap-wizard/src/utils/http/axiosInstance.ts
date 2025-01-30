@@ -23,7 +23,11 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status == 401 && !originalRequest._retry && RETRY_FLAG) {
+    if (
+      error?.response?.status == 401 &&
+      !originalRequest?._retry &&
+      RETRY_FLAG
+    ) {
       originalRequest._retry = true;
       const refreshToken = getCookie(TOKENS.REFRESH);
 

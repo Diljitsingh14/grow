@@ -1,9 +1,14 @@
 import os
 import environ
 import stripe
+import django_filters
 
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -11,9 +16,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 
 from main.models import Business
-from .serializer import OrderSerializer, DiscountSerializer, ProductAndServicesSerializer, StatusSerialiser
-from .models import Order, Discounts, ProductAndService, Status, Product
+from .serializer import *
+from .models import *
 from .stripeController import delete_all_stripe_products
+
 
 
 env = environ.Env()
@@ -132,12 +138,36 @@ class ProductAndServiceViewSet(viewsets.ModelViewSet):
     queryset = ProductAndService.objects.all()
     serializer_class = ProductAndServicesSerializer
     http_method_names = ['get']
+    permission_classes = [AllowAny]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name', 'description', 'type']
+    ordering_fields = ['price', 'quantity_available']
 
 
 class StatusViewSet(viewsets.ModelViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerialiser
     http_method_names = ['get']
+
+
+
+class CartFilter(django_filters.FilterSet):
+    status = django_filters.CharFilter(field_name='status', lookup_expr='iexact')  # Filter by status (exact match)
+
+    class Meta:
+        model = Cart
+        fields = ['status']
+
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    filter_backends = [DjangoFilterBackend]  # Use DjangoFilterBackend for filtering
+    filterset_class = CartFilter  # Apply the custom filter
+
+
+    def get_queryset(self):
+        # Dynamically filter the Cart queryset by the current user
+        return Cart.objects.filter(user=self.request.user)
 
 
 @csrf_exempt

@@ -3,7 +3,7 @@ from .serializer import *
 from .models import *
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ViewSet
 from main.models import OAuthAccount
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException, NotFound, ValidationError
@@ -493,3 +493,120 @@ class LeadResponseViewSet(ModelViewSet):
         }
 
         service.events().insert(calendarId='primary', body=event).execute()
+
+
+class GoogleCalendarViewSet(ViewSet):
+    """
+    A ViewSet to fetch Google Calendar events for a user.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        """
+        Fetch Google Calendar events for the current month for all connected accounts.
+        """
+        connected_accounts = self.get_connected_accounts(request.user)
+
+        start_date_str = request.GET.get('start', None)
+        end_date_str = request.GET.get('end', None)
+
+        start_date, end_date = self.get_start_end_dates(start_date_str, end_date_str)
+
+        all_events = {}
+        for account in connected_accounts:
+            events = self.get_google_calendar_events(account, start_date, end_date)
+            all_events[account.provider_account_id] = events
+
+        return Response(all_events)
+
+    def get_connected_accounts(self, user, email=""):
+        """
+        Get all connected Google accounts for the user.
+        """
+        # Replace this with your logic to fetch connected accounts.
+        accounts = OAuthAccount.objects.filter(user=user)
+        if (email):
+            accounts = accounts.filter(social_profile__email=email)
+        # Example: ConnectedGoogleAccount.objects.filter(user=user)
+        return accounts
+
+    def get_start_end_dates(self, start_date_str, end_date_str):
+        if start_date_str == None or end_date_str == None:
+            current_date = datetime.utcnow()
+            first_day_of_month = make_aware(
+                datetime(current_date.year, current_date.month, 1), pytz.UTC)
+            next_month = (current_date.month % 12) + 1
+            next_month_year = current_date.year + (1 if next_month == 1 else 0)
+            last_day_of_month = make_aware(
+                datetime(next_month_year, next_month, 1) - timedelta(days=1), pytz.UTC)
+            
+            return first_day_of_month, last_day_of_month
+
+        start_date = datetime.strptime(start_date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+        
+        # Make them timezone-aware (assuming UTC)
+        start_date = make_aware(start_date, pytz.UTC)
+        end_date = make_aware(end_date, pytz.UTC)
+        
+        return start_date, end_date
+
+
+    # TODO: COMMON FUNCTION AND COMMON REFRESH LOGIC
+    def get_google_calendar_events(self, account, start_date, end_date):
+        """
+        Fetch Google Calendar events for a given account.
+        """
+        events = []
+
+        if not account or not account.access_token:
+            return events
+
+        # Check if the access token is expired and refresh if necessary
+        # if self.is_token_expired(account):
+        #     if not self.refresh_google_token(account):
+        #         return events  # If token refresh fails, return empty
+
+        try:
+            # Initialize credentials for Google API
+            credentials = Credentials(
+                token=account.access_token,
+                refresh_token=account.refresh_token,  # Ensure this is the refresh token
+                token_uri='https://oauth2.googleapis.com/token',
+                client_id=settings.GOOGLE_CLIENT_ID,
+                client_secret=settings.GOOGLE_CLIENT_SECRET,
+                scopes=['https://www.googleapis.com/auth/calendar']
+            )
+
+            service = build('calendar', 'v3', credentials=credentials)
+
+            # Fetch events from Google Calendar
+            events_result = service.events().list(
+                calendarId='primary',
+                timeMin=start_date.isoformat(),
+                timeMax=end_date.isoformat(),
+                singleEvents=True,
+                orderBy='startTime'
+            ).execute()
+
+            events = events_result.get('items', [])
+
+            return events
+        except Exception as e:
+            # Log the error or handle accordingly
+            print(f"Error fetching Google Calendar events: {e}")
+
+    # def is_token_expired(self, account):
+    #     """
+    #     Check if the token is expired.
+    #     """
+    #     # Implement your logic to check token expiration.
+    #     # Example: Compare account.token_expiry with datetime.now()
+    #     pass
+
+    # def refresh_google_token(self, account):
+    #     """
+    #     Refresh Google OAuth token.
+    #     """
+    #     # Implement your logic to refresh the token.
+    #     pass *

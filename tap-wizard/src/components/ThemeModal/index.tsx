@@ -55,13 +55,13 @@ const ThemeModal: React.FC<ThemeModalProps> = ({
     try {
       if (isUpdating && initialThemeData) {
         // Update existing theme
-        await axiosInstance.put(
-          `${TURNX_API.MASTER_FORM_THEMES}/${initialThemeData.id}/`,
-          formData
-        );
+        // await axiosInstance.put(
+        //   `${TURNX_API.MASTER_FORM_THEMES}/${initialThemeData.id}/`,
+        //   formData
+        // );
       } else {
         // Create new theme
-        await axiosInstance.post(TURNX_API.MASTER_FORM_THEMES, formData);
+        // await axiosInstance.post(TURNX_API.MASTER_FORM_THEMES, formData);
       }
 
       onSave(); // Call the save callback to refresh theme list or notify the parent component
