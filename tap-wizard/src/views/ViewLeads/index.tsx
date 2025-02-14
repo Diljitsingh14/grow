@@ -25,7 +25,7 @@ const ViewLeads: React.FC = () => {
     try {
       const response = await fetchLeads();
       if (response.status === 200) {
-        setLeads(response.data);
+        setLeads(response?.data ?? []);
       }
     } catch (error) {
       console.error(error);
@@ -50,7 +50,7 @@ const ViewLeads: React.FC = () => {
     setIsArchiveModalOpen(true);
   };
 
-  const onArchive = (id: any) => {};
+  const onArchive = (id: any) => { };
 
   const onChangeStatus = async (id: string, status: any) => {
     try {
@@ -101,7 +101,7 @@ const ViewLeads: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
-  const sortedLeads = [...leads].sort((a, b) => {
+  const sortedLeads = leads?.length ? [...(leads)].sort((a, b) => {
     if (!sortConfig || !sortConfig.key) return 0; // Check if sortConfig and sortConfig.key are defined
 
     const key = sortConfig.key as keyof ILead;
@@ -120,7 +120,7 @@ const ViewLeads: React.FC = () => {
       return sortConfig.direction === "asc" ? 1 : -1;
     }
     return 0;
-  });
+  }) : [];
 
   const filteredLeads = sortedLeads.filter(
     (lead) =>
@@ -199,7 +199,7 @@ const ViewLeads: React.FC = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {leads.map((lead) => (
+            {leads?.map?.((lead) => (
               <tr
                 key={lead.id}
                 className="cursor-pointer"
@@ -258,25 +258,25 @@ const ViewLeads: React.FC = () => {
                     </Dialog.Title>
                     {Array.isArray(selectedLead.form_response)
                       ? selectedLead.form_response.map((response, index) => (
+                        <div key={index} className="mb-2">
+                          <p className="text-sm font-medium text-gray-700">
+                            {response.desc}:
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {response.response}
+                          </p>
+                        </div>
+                      ))
+                      : Object.entries(selectedLead.form_response).map(
+                        ([key, value], index) => (
                           <div key={index} className="mb-2">
                             <p className="text-sm font-medium text-gray-700">
-                              {response.desc}:
+                              {key}:
                             </p>
-                            <p className="text-sm text-gray-500">
-                              {response.response}
-                            </p>
+                            <p className="text-sm text-gray-500">{value}</p>
                           </div>
-                        ))
-                      : Object.entries(selectedLead.form_response).map(
-                          ([key, value], index) => (
-                            <div key={index} className="mb-2">
-                              <p className="text-sm font-medium text-gray-700">
-                                {key}:
-                              </p>
-                              <p className="text-sm text-gray-500">{value}</p>
-                            </div>
-                          )
-                        )}
+                        )
+                      )}
 
                     <div className="flex justify-center space-x-4 mt-4">
                       <button
