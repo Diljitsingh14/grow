@@ -8,17 +8,59 @@ from main.models import Business
 class ProductVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
-        fields = ['id', 'attribute_name', 'attribute_value',
-                  'additional_price', 'quantity_available']
+        fields = "__all__"
 
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'image', 'alt_text']
+
+class CurrencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Currency
+        fields = ['name', 'symbol']
+
+class ProductDomainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Domain
+        fields = "__all__"
+
+class CategorySerializer(serializers.ModelSerializer):
+    domain = ProductDomainSerializer(  read_only=True)
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    category = CategorySerializer(  read_only=True)
+    class Meta:
+        model = SubCategory
+        fields = ['name', 'category']
+
+class ReturnPolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReturnPolicy
+        fields = "__all__"
 
 class ProductAndServicesSerializer(serializers.ModelSerializer):
     variants = ProductVariantSerializer(many=True, read_only=True)
+    images = ProductImageSerializer(many=True, read_only=True)  # Added the images field
+    currency = CurrencySerializer(read_only=True)  # Currency object
+    subcategory = SubCategorySerializer(read_only=True)  # Subcategory object
+    return_policies = ReturnPolicySerializer(read_only=True,many=True)  # Return policy object
+
 
     class Meta:
         model = ProductAndService
         fields = "__all__"
 
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['id', 'product_and_service', 'user', 'content', 'rating']
 
 class OrderSerializer(serializers.ModelSerializer):
     discounts = serializers.StringRelatedField(

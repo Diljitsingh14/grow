@@ -73,6 +73,39 @@ class Template(models.Model):
     def __str__(self):
         return self.name
 
+class Currency(models.Model):
+    name = models.CharField(max_length=10)
+    symbol = models.CharField(max_length=5)
+
+    def __str__(self):
+        return self.name
+
+class Domain(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
+
+class SubCategory(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
+
+class ReturnPolicy(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
 
 class ProductAndService(models.Model):
     name = models.CharField(max_length=255)
@@ -86,14 +119,37 @@ class ProductAndService(models.Model):
         Template, on_delete=models.SET_NULL, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_template_type = models.BooleanField(default=False)
-    image = models.ImageField(null=True, blank=True)
     quantity_available = models.IntegerField(
         default=0, help_text='Available stock quantity')
     is_featured = models.BooleanField(
         default=False, help_text='Is this product or service featured?')
 
+    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL,null=True)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, related_name='products',null=True,blank=True)
+
+    return_policy = models.ManyToManyField(ReturnPolicy, null=True)
+
     def __str__(self):
         return f"{self.name} - {self.type}"
+
+class Review(models.Model):
+    product_and_service = models.ForeignKey(
+        ProductAndService, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    rating = models.IntegerField(choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')])
+
+    def __str__(self):
+        return f"{self.user.username} - {self.content}"
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(
+        ProductAndService, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to="product_images/")  # Images will be stored on S3/GCP
+    alt_text = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"Image for {self.product.name}"
 
 
 class ProductVariant(models.Model):
