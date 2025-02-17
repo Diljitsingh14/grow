@@ -52,3 +52,5 @@ grow-api-service/grow/__pycache__/*
 grow-api-service/sales/__pycache__/*
 grow-api-service/grow/__pycache__/*
 *.pyc
+
+tap-wizard/.vscode/
