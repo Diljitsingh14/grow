@@ -5,9 +5,7 @@ import { usePathname } from "next/navigation";
 import checkAuth from "@/utils/common/authTest";
 import Header from ".";
 
-const byPassRoutes: string[] = [
-  "/"
-]
+const byPassRoutes: string[] = ["/"];
 
 function HeaderWrapper() {
   const [data, setData] = useState({ auth: false });
@@ -24,16 +22,10 @@ function HeaderWrapper() {
   }, []);
 
   const isLoggedIn: boolean = !!(data?.auth ?? false);
-  const shouldShow: boolean = byPassRoutes.includes(pathname) || !isLoggedIn;
+  const shouldShow: boolean =
+    byPassRoutes.includes(pathname as string) || !isLoggedIn;
 
-  return (
-    <>
-      {
-        !isLoading && shouldShow &&
-        <Header isLogin={isLoggedIn} />
-      }
-    </>
-  );
+  return <>{!isLoading && shouldShow && <Header isLogin={isLoggedIn} />}</>;
 }
 
 export default HeaderWrapper;

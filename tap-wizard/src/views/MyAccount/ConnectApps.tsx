@@ -21,9 +21,9 @@ const ConnectAccountsView = () => {
   const fetchConnectedAccounts = async () => {
     try {
       const response = await fetchConnectedOAuthAccounts();
-      if (response.status == 200) setConnectedAccounts(response.data.results);
+      if (response.status == 200) setConnectedAccounts(response?.data?.results);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

@@ -25,7 +25,7 @@ const ViewLeads: React.FC = () => {
     try {
       const response = await fetchLeads();
       if (response.status === 200) {
-        setLeads(response?.data ?? []);
+        setLeads(response?.data.results ?? []);
       }
     } catch (error) {
       console.error(error);
@@ -50,7 +50,7 @@ const ViewLeads: React.FC = () => {
     setIsArchiveModalOpen(true);
   };
 
-  const onArchive = (id: any) => { };
+  const onArchive = (id: any) => {};
 
   const onChangeStatus = async (id: string, status: any) => {
     try {
@@ -101,26 +101,28 @@ const ViewLeads: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
-  const sortedLeads = leads?.length ? [...(leads)].sort((a, b) => {
-    if (!sortConfig || !sortConfig.key) return 0; // Check if sortConfig and sortConfig.key are defined
+  const sortedLeads = leads?.length
+    ? [...leads].sort((a, b) => {
+        if (!sortConfig || !sortConfig.key) return 0; // Check if sortConfig and sortConfig.key are defined
 
-    const key = sortConfig.key as keyof ILead;
+        const key = sortConfig.key as keyof ILead;
 
-    // Null checks for a[key] and b[key]
-    const aValue = a[key];
-    const bValue = b[key];
+        // Null checks for a[key] and b[key]
+        const aValue = a[key];
+        const bValue = b[key];
 
-    if (aValue === null || aValue === undefined) return 1; // Consider null or undefined as greater
-    if (bValue === null || bValue === undefined) return -1; // Consider null or undefined as lesser
+        if (aValue === null || aValue === undefined) return 1; // Consider null or undefined as greater
+        if (bValue === null || bValue === undefined) return -1; // Consider null or undefined as lesser
 
-    if (aValue < bValue) {
-      return sortConfig.direction === "asc" ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return sortConfig.direction === "asc" ? 1 : -1;
-    }
-    return 0;
-  }) : [];
+        if (aValue < bValue) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      })
+    : [];
 
   const filteredLeads = sortedLeads.filter(
     (lead) =>
@@ -258,25 +260,25 @@ const ViewLeads: React.FC = () => {
                     </Dialog.Title>
                     {Array.isArray(selectedLead.form_response)
                       ? selectedLead.form_response.map((response, index) => (
-                        <div key={index} className="mb-2">
-                          <p className="text-sm font-medium text-gray-700">
-                            {response.desc}:
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {response.response}
-                          </p>
-                        </div>
-                      ))
-                      : Object.entries(selectedLead.form_response).map(
-                        ([key, value], index) => (
                           <div key={index} className="mb-2">
                             <p className="text-sm font-medium text-gray-700">
-                              {key}:
+                              {response.desc}:
                             </p>
-                            <p className="text-sm text-gray-500">{value}</p>
+                            <p className="text-sm text-gray-500">
+                              {response.response}
+                            </p>
                           </div>
-                        )
-                      )}
+                        ))
+                      : Object.entries(selectedLead.form_response).map(
+                          ([key, value], index) => (
+                            <div key={index} className="mb-2">
+                              <p className="text-sm font-medium text-gray-700">
+                                {key}:
+                              </p>
+                              <p className="text-sm text-gray-500">{value}</p>
+                            </div>
+                          )
+                        )}
 
                     <div className="flex justify-center space-x-4 mt-4">
                       <button
