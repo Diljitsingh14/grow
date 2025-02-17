@@ -24,7 +24,7 @@ const FormTemplate: React.FC<FormTemplateProps> = ({ templates }) => {
   const fetchConnectedAccounts = async () => {
     try {
       const response = await fetchConnectedOAuthAccounts();
-      if (response.status == 200) setConnectedAccounts(response.data);
+      if (response.status == 200) setConnectedAccounts(response.data?.results);
     } catch (err) {
       console.log(err);
     }

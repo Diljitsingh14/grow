@@ -25,7 +25,7 @@ const ViewLeads: React.FC = () => {
     try {
       const response = await fetchLeads();
       if (response.status === 200) {
-        setLeads(response.data);
+        setLeads(response?.data.results ?? []);
       }
     } catch (error) {
       console.error(error);
@@ -101,26 +101,28 @@ const ViewLeads: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
-  const sortedLeads = [...leads].sort((a, b) => {
-    if (!sortConfig || !sortConfig.key) return 0; // Check if sortConfig and sortConfig.key are defined
+  const sortedLeads = leads?.length
+    ? [...leads].sort((a, b) => {
+        if (!sortConfig || !sortConfig.key) return 0; // Check if sortConfig and sortConfig.key are defined
 
-    const key = sortConfig.key as keyof ILead;
+        const key = sortConfig.key as keyof ILead;
 
-    // Null checks for a[key] and b[key]
-    const aValue = a[key];
-    const bValue = b[key];
+        // Null checks for a[key] and b[key]
+        const aValue = a[key];
+        const bValue = b[key];
 
-    if (aValue === null || aValue === undefined) return 1; // Consider null or undefined as greater
-    if (bValue === null || bValue === undefined) return -1; // Consider null or undefined as lesser
+        if (aValue === null || aValue === undefined) return 1; // Consider null or undefined as greater
+        if (bValue === null || bValue === undefined) return -1; // Consider null or undefined as lesser
 
-    if (aValue < bValue) {
-      return sortConfig.direction === "asc" ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return sortConfig.direction === "asc" ? 1 : -1;
-    }
-    return 0;
-  });
+        if (aValue < bValue) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      })
+    : [];
 
   const filteredLeads = sortedLeads.filter(
     (lead) =>
@@ -199,7 +201,7 @@ const ViewLeads: React.FC = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {leads.map((lead) => (
+            {leads?.map?.((lead) => (
               <tr
                 key={lead.id}
                 className="cursor-pointer"

@@ -1,5 +1,5 @@
+"use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import FormDisplay from "@/components/FormDisplay";
 import {
   getPublishedFormView,
@@ -11,10 +11,11 @@ import { DEFAULT_FORM_THEME } from "@/constants/forms";
 // I also want following data:
 // 1. the slots parameter in the response: which is
 
-interface PublicFormViewProps {}
+interface PublicFormViewProps {
+  uuid: string;
+}
 
-const PublicFormView: React.FC<PublicFormViewProps> = () => {
-  const router = useRouter();
+const PublicFormView: React.FC<PublicFormViewProps> = ({ uuid }) => {
   const [fullTemplate, setFullTemplate] = useState<any>(null);
   const [formTemplate, setFormTemplate] = useState<ITemplate | null>(null);
   const [formFields, setFormFields] = useState<IFormField[]>([]);
@@ -46,10 +47,10 @@ const PublicFormView: React.FC<PublicFormViewProps> = () => {
       }
     };
 
-    if (router.query.uuid) {
-      fetchFormData(router.query.uuid as string);
+    if (uuid) {
+      fetchFormData(uuid);
     }
-  }, [router.query.uuid]);
+  }, [uuid]);
 
   if (isLoading) {
     return (

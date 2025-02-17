@@ -72,9 +72,8 @@ const Products: React.FC<IProducts> = ({ id }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const fetchProducts = async () => {
     setIsLoading(true);
-    // const { data } = await getProducts();
-    // console.log(data);
-    // setProducts(data);
+    const { data } = await getProducts();
+    setProducts(data?.results);
     setIsLoading(false);
   };
 
