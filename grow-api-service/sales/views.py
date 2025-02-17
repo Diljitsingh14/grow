@@ -169,6 +169,18 @@ class CartViewSet(viewsets.ModelViewSet):
         # Dynamically filter the Cart queryset by the current user
         return Cart.objects.filter(user=self.request.user)
 
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    # List view should be public
+    permission_classes = [AllowAny]
+
+    # For all other methods, authentication is required
+    def get_permissions(self):
+        if self.action == 'list':
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
 @csrf_exempt
 @require_POST

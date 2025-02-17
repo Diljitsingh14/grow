@@ -7,6 +7,7 @@ router.register("order", OrderViewSet)
 router.register("discounts", DiscountViewSet)
 router.register('status', StatusViewSet)
 router.register("products", ProductAndServiceViewSet)
+router.register("products-reviews", ReviewViewSet)
 router.register("cart", CartViewSet,basename="cart")
 
 urlpatterns = [
