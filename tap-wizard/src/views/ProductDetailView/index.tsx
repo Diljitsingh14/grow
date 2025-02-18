@@ -2,6 +2,7 @@ import Image from "next/image";
 import QuantityButton from "@/components/QuantityButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { IProduct } from "@/types/product";
 
 export interface IProductVariantData {
   id: number;
@@ -28,7 +29,7 @@ export interface IProductDetail {
 }
 
 interface IProductDetailViewProps {
-  productDetail: IProductDetail
+  productDetail: IProduct;
 }
 
 function ProductDetailView({ productDetail }: IProductDetailViewProps) {
@@ -39,7 +40,7 @@ function ProductDetailView({ productDetail }: IProductDetailViewProps) {
           <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
             <Image
               className="w-full hidden dark:block"
-              src={productDetail.image.toString()}
+              src={productDetail.images[0].image.toString()}
               alt=""
               width={150}
               height={150}
@@ -47,15 +48,9 @@ function ProductDetailView({ productDetail }: IProductDetailViewProps) {
           </div>
 
           <div className="mt-6 sm:mt-8 lg:mt-0">
-            <h1
-              className="text-xl text-dark"
-            >
-              {productDetail.name}
-            </h1>
+            <h1 className="text-xl text-dark">{productDetail.name}</h1>
             <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
-              <p
-                className="text-3xl text-orange-600 sm:text-3xl"
-              >
+              <p className="text-3xl text-orange-600 sm:text-3xl">
                 {productDetail.price} $
               </p>
             </div>
@@ -84,7 +79,7 @@ function ProductDetailView({ productDetail }: IProductDetailViewProps) {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default ProductDetailView
+export default ProductDetailView;

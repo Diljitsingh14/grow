@@ -3,11 +3,10 @@ import Products from "../Products";
 import Services from "../Services";
 
 const HomeView: React.FC = () => {
-
   return (
     <>
       <Features />
-      <Products id="products" />
+      <Products />
       <Services />
     </>
   );

@@ -16,7 +16,7 @@ export interface IProduct {
 const Product: React.FC<IProduct> = (props) => {
   const { label, price, image, desc, id } = props;
   return (
-    <Card href="#" className="max-w-sm">
+    <Card href={`/products/${id}`} className="max-w-sm">
       <div className="container text-center justify-center items-center">
         <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white">
           {label}

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import checkAuth from "@/utils/common/authTest";
@@ -25,7 +24,7 @@ function HeaderWrapper() {
   const shouldShow: boolean =
     byPassRoutes.includes(pathname as string) || !isLoggedIn;
 
-  return <>{!isLoading && shouldShow && <Header isLogin={isLoggedIn} />}</>;
+  return <>{<Header isLoading={isLoading} isLogin={isLoggedIn} />}</>;
 }
 
 export default HeaderWrapper;
