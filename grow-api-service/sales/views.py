@@ -158,6 +158,14 @@ class CartFilter(django_filters.FilterSet):
         model = Cart
         fields = ['status']
 
+class ReviewFilter(django_filters.FilterSet):
+    # product = django_filters.NumberFilter(field_name='product_and_service', lookup_expr='iexact')  # Filter by status (exact match)
+    product = django_filters.NumberFilter(field_name='product_and_service', lookup_expr='exact')  # Filter by status (exact match)
+
+    class Meta:
+        model = Review
+        fields =['product_and_service']
+
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
@@ -175,6 +183,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     # List view should be public
     permission_classes = [AllowAny]
+    filterset_class = ReviewFilter  # Apply the custom filter
+    filter_backends = [DjangoFilterBackend]  # Use DjangoFilterBackend for filtering
 
     # For all other methods, authentication is required
     def get_permissions(self):

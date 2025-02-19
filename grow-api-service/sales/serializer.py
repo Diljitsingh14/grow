@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 
 from main.serializer import BusinessSerializer
+
 from main.models import Business
 
 
@@ -58,9 +59,17 @@ class ProductAndServicesSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = Review
         fields = ['id', 'product_and_service', 'user', 'content', 'rating']
+
+    def get_user(self, obj):
+        return {
+            "id": obj.user.id,
+            "username": obj.user.username
+        }
 
 class OrderSerializer(serializers.ModelSerializer):
     discounts = serializers.StringRelatedField(

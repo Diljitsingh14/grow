@@ -32,4 +32,5 @@ export const TURNX_API = {
 export const PRODUCT_API = {
   PRODUCT_LIST: `${HOST}/api/sales/products/`,
   PRODUCT_DETAIL: `${HOST}/api/sales/products/##ID##/`,
+  PRODUCT_REVIEW: `${HOST}/api/sales/products-reviews`,
 };

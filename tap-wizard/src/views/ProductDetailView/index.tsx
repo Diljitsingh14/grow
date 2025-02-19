@@ -1,83 +1,106 @@
+"use client";
+import { useState } from "react";
 import Image from "next/image";
 import QuantityButton from "@/components/QuantityButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { IProduct } from "@/types/product";
-
-export interface IProductVariantData {
-  id: number;
-  attribute_name: string;
-  attribute_value: string;
-  additional_price: string;
-  quantity_available: number;
-}
-
-type ProductTypes = "product" | "service";
-
-export interface IProductDetail {
-  id: number;
-  variants: IProductVariantData[];
-  name: string;
-  description: string;
-  type: ProductTypes;
-  price: number;
-  is_template_type: boolean;
-  image: URL;
-  quantity_available: number;
-  is_featured: boolean;
-  template?: unknown;
-}
+import Reviews from "@/components/ProductReviews";
+// import Reviews from "@/components/ProductReview";
+// import CartDrawer from "@/components/CartDrawer";
 
 interface IProductDetailViewProps {
   productDetail: IProduct;
 }
 
 function ProductDetailView({ productDetail }: IProductDetailViewProps) {
+  const [selectedImage, setSelectedImage] = useState(
+    productDetail.images[0]?.image
+  );
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
   return (
     <section className="py-2 bg-white md:py-16 antialiased">
-      <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
-        <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
-          <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
+      <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0 flex">
+        {/* Left Side: Image Gallery */}
+        <div className="lg:w-1/2 border-grey-200 border-2 rounded-lg py-4 px-2">
+          <div className="relative max-w-md mx-auto">
             <Image
-              className="w-full hidden dark:block"
-              src={productDetail.images[0].image.toString()}
-              alt=""
-              width={150}
-              height={150}
+              className="w-full h-[350px] object-contain cursor-zoom-in"
+              src={selectedImage}
+              alt={productDetail.name}
+              width={200}
+              height={200}
             />
           </div>
-
-          <div className="mt-6 sm:mt-8 lg:mt-0">
-            <h1 className="text-xl text-dark">{productDetail.name}</h1>
-            <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
-              <p className="text-3xl text-orange-600 sm:text-3xl">
-                {productDetail.price} $
-              </p>
-            </div>
-
-            <div className="flex my-3 gap-4">
-              <QuantityButton max={productDetail.quantity_available} />
-              <button
-                className="bg-orange-600 text-white sm:mt-0 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 rounded-lg px-5 py-2.5 focus:outline-none flex items-center justify-center"
-                role="button"
-              >
-                <FontAwesomeIcon icon={faCartShopping} className="me-1" />
-                Add to cart
-              </button>
-
-              <button className="text-orange-600 border border-orange-600 rounded-lg px-3 flex items-center justify-center">
-                {/* <FavIcon /> */}
-                <FontAwesomeIcon icon={faHeart} />
-              </button>
-            </div>
+          <div className="flex space-x-2 mt-4">
+            {productDetail.images.map((img, index) => (
+              <Image
+                key={index}
+                className={`w-20 h-20 object-cover border-2 cursor-pointer ${
+                  selectedImage === img.image
+                    ? "border-orange-600"
+                    : "border-gray-300"
+                }`}
+                src={img.image}
+                alt="Product Thumbnail"
+                width={50}
+                height={50}
+                onClick={() => setSelectedImage(img.image)}
+              />
+            ))}
           </div>
         </div>
-        <div className="mt-5">
-          <p className="text-gray-500 dark:text-gray-400">
-            {productDetail.description}
+
+        {/* Right Side: Product Info */}
+        <div className="lg:w-1/2 pl-8">
+          <h1 className="text-xl font-bold">{productDetail.name}</h1>
+          <p className="text-3xl text-orange-600 my-2">
+            ${productDetail.price}
           </p>
+
+          {/* Variants Section */}
+          {productDetail.variants.length > 0 && (
+            <div className="mb-4">
+              <h3 className="font-semibold mb-2">Variants</h3>
+              <div className="flex gap-3">
+                {productDetail.variants.map((variant) => (
+                  <button
+                    key={variant.id}
+                    className="border px-3 py-1 rounded-md hover:bg-gray-200"
+                  >
+                    {variant.attribute_name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Quantity & Buttons */}
+          <div className="flex gap-4 my-3">
+            <QuantityButton max={productDetail.quantity_available} />
+            <button
+              className="bg-orange-600 text-white px-5 py-2.5 rounded-lg flex items-center"
+              onClick={() => setIsCartOpen(true)}
+            >
+              <FontAwesomeIcon icon={faCartShopping} className="mr-2" />
+              Add to cart
+            </button>
+
+            <button className="text-orange-600 border border-orange-600 px-3 rounded-lg">
+              <FontAwesomeIcon icon={faHeart} />
+            </button>
+          </div>
+
+          <p className="text-gray-500">{productDetail.description}</p>
         </div>
       </div>
+
+      {/* Reviews Section */}
+      <Reviews productId={productDetail.id} />
+
+      {/* Cart Drawer */}
+      {/* {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} />} */}
     </section>
   );
 }
