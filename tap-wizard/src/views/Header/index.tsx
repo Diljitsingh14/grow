@@ -40,6 +40,7 @@ export interface IUser {
 interface IHeader {
   user?: IUser;
   isLogin: boolean;
+  isLoading: boolean;
 }
 
 const navigation: NavigationItem[] = [
@@ -71,7 +72,7 @@ const userMenuItems = [
   },
 ];
 
-const Header: React.FC<IHeader> = ({ user, isLogin }) => {
+const Header: React.FC<IHeader> = ({ user, isLogin, isLoading }) => {
   const cartItems = getCartItems();
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -168,7 +169,10 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
                   </MenuItems>
                 </Menu>
                 {/* login & anonymous user  */}
-                {isLogin ? (
+
+                {isLoading ? (
+                  <div className="h-8 w-8 rounded-full bg-gray-500 animate-pulse mx-4"></div>
+                ) : isLogin ? (
                   <Menu as="div" className="relative mx-auto flex">
                     <button
                       type="button"
@@ -178,8 +182,6 @@ const Header: React.FC<IHeader> = ({ user, isLogin }) => {
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
-                    {/* Profile dropdown */}
-
                     <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <Image
                         height={8}

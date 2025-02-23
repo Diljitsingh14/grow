@@ -40,7 +40,7 @@ const SetupForm: React.FC<SetupFormProps> = ({
   const fetchMasterThemes = async () => {
     try {
       const { data } = await fetchMasterFormThemes();
-      setMasterThemes(data);
+      setMasterThemes(data?.results);
     } catch (error) {
       console.error(error);
     }

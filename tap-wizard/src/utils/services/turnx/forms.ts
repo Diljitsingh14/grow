@@ -1,4 +1,4 @@
-import { TURNX_API } from "@/constants/urls";
+import { PRODUCT_API, TURNX_API } from "@/constants/urls";
 import { ILeadConsumeRequestData } from "@/types/forms";
 import axiosInstance from "@/utils/http/axiosInstance";
 
@@ -40,5 +40,13 @@ export const fetchConnectedForms = async () => {
 };
 
 export const fetchGoogleCalendar = async (query: string) => {
-  return axiosInstance.get(TURNX_API.GOOGE_CALENDAR + '?' + query);
-}
+  return axiosInstance.get(TURNX_API.GOOGLE_CALENDAR + "?" + query);
+};
+
+export const fetchProductDetail = async (productId: number) => {
+  const url = PRODUCT_API.PRODUCT_DETAIL.replace(
+    "##ID##",
+    productId.toString()
+  );
+  return axiosInstance.get(url);
+};

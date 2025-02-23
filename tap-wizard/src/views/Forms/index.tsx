@@ -8,9 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleNodes,
   faFileInvoice,
-  faFolder,
 } from "@fortawesome/free-solid-svg-icons";
-import { IConnectedForm, IFormField, ITemplate } from "@/types/forms";
+import { IConnectedForm, ITemplate } from "@/types/forms";
 import FormTemplate from "@/components/FormTemplate";
 import { PUBLIC_FORM_URL_PREFIX } from "@/constants/routes";
 
@@ -146,7 +145,7 @@ const MyForms: React.FC = () => {
   const fetchTemplates = async () => {
     try {
       const { data } = await fetchFormTemplates();
-      setFormTemplates(data);
+      setFormTemplates(data.results);
     } catch (error) {
       console.error(error);
     }
@@ -156,7 +155,7 @@ const MyForms: React.FC = () => {
   const fetchConnectedFormsData = async () => {
     try {
       const { data } = await fetchConnectedForms(); // Assuming this is how you fetch connected forms
-      setConnectedForms(data);
+      setConnectedForms(data.results);
     } catch (error) {
       console.error(error);
     }

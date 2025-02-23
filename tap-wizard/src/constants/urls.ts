@@ -26,10 +26,11 @@ export const TURNX_API = {
   LEAD_RESPONSE: `${HOST}/api/turnx/lead-responses/`,
 
   LEAD_CONFIRM: `${HOST}/api/turnx/lead-responses/#LEAD_ID#/consume-lead/`,
-  GOOGE_CALENDAR: `${HOST}/api/turnx/google-calendar`,
+  GOOGLE_CALENDAR: `${HOST}/api/turnx/google-calendar`,
 };
 
 export const PRODUCT_API = {
   PRODUCT_LIST: `${HOST}/api/sales/products/`,
   PRODUCT_DETAIL: `${HOST}/api/sales/products/##ID##/`,
+  PRODUCT_REVIEW: `${HOST}/api/sales/products-reviews`,
 };

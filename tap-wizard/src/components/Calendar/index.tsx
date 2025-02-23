@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Calendar, momentLocalizer, NavigateAction, View } from "react-big-calendar";
 //import moment from "moment";
 import moment, { unitOfTime } from "moment-timezone"
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import { fetchGoogleCalendar } from "@/utils/services/turnx/forms";
 
 const localizer = momentLocalizer(moment);
@@ -43,22 +42,23 @@ const MyCalendar: React.FC = () => {
           : moment(date.date ?? '').toDate();
       }
 
-      const formattedEvents = Object.entries(data).flatMap((entry: [string, IncomingEvent[]]): Event[] => {
-        const [userId, events] = entry;
+      const formattedEvents = Object.entries(data)
+        .flatMap((entry: [string, IncomingEvent[]]): Event[] => {
+          const [userId, events] = entry;
 
-        return events.map((value): Event => {
-          const start = getDate(value.start);
-          const end = getDate(value.end);
+          return events?.map((value): Event => {
+            const start = getDate(value.start);
+            const end = getDate(value.end);
 
-          return ({
-            id: value.id,
-            start,
-            end,
-            title: value.summary,
-            userId,
-          })
+            return ({
+              id: value.id,
+              start,
+              end,
+              title: value.summary,
+              userId,
+            })
+          });
         });
-      });
 
       setEvents(formattedEvents);
     } catch (error) {
@@ -71,7 +71,7 @@ const MyCalendar: React.FC = () => {
   }, [fetchEvents]);
 
   const handleRangeChange = useCallback((range: Date[] | { start: Date; end: Date }, view?: View) => {
-    
+
     const { start, end } = Array.isArray(range)
       ? { start: range[0], end: range.at(-1) }
       : range;

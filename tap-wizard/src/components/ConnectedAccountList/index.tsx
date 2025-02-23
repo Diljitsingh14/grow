@@ -2,6 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { isExpire } from "@/utils/common/helper";
+import Image from "next/image";
 
 // Define the interface for the account data
 interface Account {
@@ -60,16 +61,19 @@ const ConnectedAccountList: React.FC<ConnectedAccountListProps> = ({
                 : "bg-white hover:bg-gray-50"
             } transition-colors`}
           >
-            <img
-              src={acc?.social_profile?.picture}
+            <Image
+              src={acc?.social_profile?.picture ?? '#'}
               alt={acc?.social_profile?.name}
               className="w-12 h-12 rounded-full object-cover"
+              width={100}
+              height={100}
             />
+
             <div className="ml-4 flex-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   {getProviderIcon(acc.provider)}
-                  <span className="font-medium text-blue-400 font-bold">
+                  <span className="text-blue-400 font-bold">
                     {acc?.social_profile?.name}
                   </span>
                 </div>
