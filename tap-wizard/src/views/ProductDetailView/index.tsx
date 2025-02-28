@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useCart } from "@/utils/cart-provider";
 import Image from "next/image";
 import QuantityButton from "@/components/QuantityButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,7 +19,18 @@ function ProductDetailView({ productDetail }: IProductDetailViewProps) {
     productDetail.images[0]?.image
   );
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { state, ...actions } = useCart();
 
+  const isProductAddedToCart: boolean = useMemo(
+    () => state.items.some(x => x.id == productDetail.id.toString()),
+    [state.items, productDetail.id]
+  )
+
+  const initalValue: number = state.items.find(x => x.id == productDetail.id.toString())?.quantity ?? 1;
+
+  const onIncrease = useCallback(() => actions.increaseQuantity(productDetail.id.toString()), [productDetail.id, actions]);
+  const onDecrease = useCallback(() => actions.decreaseQuantity(productDetail.id.toString()), [productDetail.id, actions]);
+  
   return (
     <section className="py-2 bg-white md:py-16 antialiased">
       <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0 flex">
@@ -37,11 +49,10 @@ function ProductDetailView({ productDetail }: IProductDetailViewProps) {
             {productDetail.images.map((img, index) => (
               <Image
                 key={index}
-                className={`w-20 h-20 object-cover border-2 cursor-pointer ${
-                  selectedImage === img.image
-                    ? "border-orange-600"
-                    : "border-gray-300"
-                }`}
+                className={`w-20 h-20 object-cover border-2 cursor-pointer ${selectedImage === img.image
+                  ? "border-orange-600"
+                  : "border-gray-300"
+                  }`}
                 src={img.image}
                 alt="Product Thumbnail"
                 width={50}
@@ -78,14 +89,27 @@ function ProductDetailView({ productDetail }: IProductDetailViewProps) {
 
           {/* Quantity & Buttons */}
           <div className="flex gap-4 my-3">
-            <QuantityButton max={productDetail.quantity_available} />
-            <button
-              className="bg-orange-600 text-white px-5 py-2.5 rounded-lg flex items-center"
-              onClick={() => setIsCartOpen(true)}
-            >
-              <FontAwesomeIcon icon={faCartShopping} className="mr-2" />
-              Add to cart
-            </button>
+            {
+              isProductAddedToCart ? (
+                <QuantityButton {...{ max: productDetail.quantity_available, initalValue, onIncrease, onDecrease }} />
+              ) : (
+                <button
+                  className="bg-orange-600 text-white px-5 py-2.5 rounded-lg flex items-center"
+                  onClick={() => {
+                    setIsCartOpen(true);
+                    actions.addToCart({
+                      id: productDetail.id.toString(),
+                      name: productDetail.name,
+                      price: Number(productDetail.price),
+                      quantity: 1,
+                    });
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCartShopping} className="mr-2" />
+                  Add to cart
+                </button>
+              )
+            }
 
             <button className="text-orange-600 border border-orange-600 px-3 rounded-lg">
               <FontAwesomeIcon icon={faHeart} />

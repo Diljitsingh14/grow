@@ -2,6 +2,7 @@ import { Session } from "@/types/session";
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
 import { NextAuthSessionProvider } from "@/utils/next-auth-session-provider";
+import { CartProvider } from "@/utils/cart-provider";
 import { authOptions } from "@/utils/next-auth-session-provider/auth";
 import HeaderWrapper from "@/views/Header/HeaderWrapper";
 import Footer from "@/views/Footer";
@@ -21,9 +22,11 @@ export default async function RootLayout(
       <body>
         <div className={inter.className}>
           <NextAuthSessionProvider session={session}>
-            <HeaderWrapper />
-            {children}
-            <Footer />
+            <CartProvider>
+              <HeaderWrapper />
+              {children}
+              <Footer />
+            </CartProvider>
           </NextAuthSessionProvider>
         </div>
       </body>
