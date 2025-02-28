@@ -3,7 +3,7 @@ import environ
 import stripe
 import django_filters
 
-from rest_framework import viewsets
+from rest_framework import viewsets,status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -167,15 +167,53 @@ class ReviewFilter(django_filters.FilterSet):
         fields =['product_and_service']
 
 class CartViewSet(viewsets.ModelViewSet):
-    queryset = Cart.objects.all()
     serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]  # Only authenticated users can access
+
     filter_backends = [DjangoFilterBackend]  # Use DjangoFilterBackend for filtering
     filterset_class = CartFilter  # Apply the custom filter
 
-
     def get_queryset(self):
-        # Dynamically filter the Cart queryset by the current user
+        """Return only carts that belong to the authenticated user."""
         return Cart.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        """If the user adds the same product again, update the existing cart item instead of creating a new one."""
+        user = self.request.user
+        product = serializer.validated_data['product']
+
+        # Check if the cart already contains this product
+        existing_cart_item = Cart.objects.filter(user=user, product=product).first()
+
+        if existing_cart_item:
+            # Update quantity and status if necessary
+            existing_cart_item.quantity = serializer.validated_data.get('quantity', 0)
+            existing_cart_item.status = serializer.validated_data.get('status', existing_cart_item.status)
+            existing_cart_item.save()
+
+            return Response(CartSerializer(existing_cart_item).data, status=status.HTTP_200_OK)
+                # If no existing cart item, create a new one
+        serializer.save(user=user)
+
+    def destroy(self, request, *args, **kwargs):
+        """Ensure only the cart owner can delete their cart."""
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response(
+                {"error": "You do not have permission to delete this cart."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().destroy(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """Ensure only the cart owner can update their cart quantity."""
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response(
+                {"error": "You do not have permission to update this cart."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().update(request, *args, **kwargs)
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()

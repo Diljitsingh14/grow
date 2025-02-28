@@ -106,7 +106,9 @@ class StatusSerialiser(serializers.ModelSerializer):
         fields = "__all__"
 
 class CartSerializer(serializers.ModelSerializer):
-     
+    product = serializers.PrimaryKeyRelatedField(queryset=ProductAndService.objects.all())
+
     class Meta:
         model = Cart
-        fields = '__all__'
+        fields = ['id', 'user', 'product', 'quantity', 'status']
+        read_only_fields = ['user']  # Prevent users from modifying 'user' field
