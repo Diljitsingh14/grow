@@ -1,0 +1,39 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "grow-api-service/**" # Only run when files in the grow-api-service directory are changed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        run: |
+          sudo apt update
+          sudo apt install -y docker.io
+
+      - name: Build and push Docker image
+        run: |
+          cd grow-api-service
+          docker build -t ${{ secrets.DOCKER_IMAGE_NAME }} .
+          docker save ${{ secrets.DOCKER_IMAGE_NAME }} | gzip > image.tar.gz
+      - name: Copy Docker Image to EC2
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
+        run: |
+          echo "$SSH_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem grow-api-service/image.tar.gz ubuntu@${{secrets.EC2_HOST}}:~/image.tar.gz
+      - name: Deploy on EC2
+        run: |
+          ssh -i private_key.pem ubuntu@${{secrets.EC2_HOST }} << 'EOF'
+          docker load < ~/image.tar.gz
+          cd ~/grow-api-service
+          docker-compose down
+          docker-compose up -d --build
+          EOF
