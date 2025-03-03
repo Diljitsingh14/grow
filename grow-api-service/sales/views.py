@@ -81,6 +81,7 @@ def push_products_to_stripe(request):
     return JsonResponse({'stripe_products': stripe_products}, status=201)
 
 
+# Orders API
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
@@ -129,11 +130,13 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 
+#Discounts API
 class DiscountViewSet(viewsets.ModelViewSet):
     queryset = Discounts.objects.all()
     serializer_class = DiscountSerializer
 
 
+#ProductAndService API
 class ProductAndServiceViewSet(viewsets.ModelViewSet):
     queryset = ProductAndService.objects.all()
     serializer_class = ProductAndServicesSerializer
@@ -144,10 +147,12 @@ class ProductAndServiceViewSet(viewsets.ModelViewSet):
     ordering_fields = ['price', 'quantity_available']
 
 
+# Status API
 class StatusViewSet(viewsets.ModelViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerialiser
     http_method_names = ['get']
+
 
 
 class ReviewFilter(django_filters.FilterSet):
