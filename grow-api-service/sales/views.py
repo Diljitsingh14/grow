@@ -150,14 +150,6 @@ class StatusViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
 
 
-
-class CartFilter(django_filters.FilterSet):
-    status = django_filters.CharFilter(field_name='status', lookup_expr='iexact')  # Filter by status (exact match)
-
-    class Meta:
-        model = Cart
-        fields = ['status']
-
 class ReviewFilter(django_filters.FilterSet):
     # product = django_filters.NumberFilter(field_name='product_and_service', lookup_expr='iexact')  # Filter by status (exact match)
     product = django_filters.NumberFilter(field_name='product_and_service', lookup_expr='exact')  # Filter by status (exact match)
@@ -165,6 +157,14 @@ class ReviewFilter(django_filters.FilterSet):
     class Meta:
         model = Review
         fields =['product_and_service']
+
+# Cart API
+class CartFilter(django_filters.FilterSet):
+    status = django_filters.CharFilter(field_name='status', lookup_expr='iexact')  # Filter by status (exact match)
+
+    class Meta:
+        model = Cart
+        fields = ['status']
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
