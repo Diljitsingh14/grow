@@ -1,13 +1,16 @@
+name: Deploy Django Backend to EC2
+
 on:
   push:
     branches:
       - main
     paths:
-      - "grow-api-service/**" # Only run when files in the grow-api-service directory are changed
+      - "grow-api-service/**" # Only run when files in the backend change
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -15,27 +18,25 @@ jobs:
       - name: Set up Docker
         run: |
           sudo apt update
-          sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          sudo apt update
-          sudo apt install -y docker-ce
+          sudo apt install -y docker.io
 
-      - name: Build and push Docker image
+      - name: Build and Push Docker Image
         run: |
           cd grow-api-service
           docker build -t ${{ secrets.DOCKER_IMAGE_NAME }} .
           docker save ${{ secrets.DOCKER_IMAGE_NAME }} | gzip > image.tar.gz
+
       - name: Copy Docker Image to EC2
         env:
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           echo "$SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
-          scp -i private_key.pem grow-api-service/image.tar.gz ubuntu@${{secrets.EC2_HOST}}:~/image.tar.gz
+          scp -i private_key.pem grow-api-service/image.tar.gz ubuntu@${{ secrets.EC2_HOST }}:~/image.tar.gz
+
       - name: Deploy on EC2
         run: |
-          ssh -i private_key.pem ubuntu@${{secrets.EC2_HOST }} << 'EOF'
+          ssh -i private_key.pem ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           docker load < ~/image.tar.gz
           cd ~/grow-api-service
           docker-compose down
