@@ -30,11 +30,11 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          sudo mkdir -p ~/.ssh
-          sudo echo "$SSH_KEY" > ~/.ssh/private_key.pem
-          sudo chmod 600 ~/.ssh/private_key.pem
-          sudo ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-          sudo scp -i ~/.ssh/private_key.pem grow-api-service/image.tar.gz ubuntu@${{ secrets.EC2_HOST }}:~/image.tar.gz
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          scp -i ~/.ssh/id_rsa grow-api-service/image.tar.gz ubuntu@${{ secrets.EC2_HOST }}:~/image.tar.gz
 
       - name: Deploy on EC2
         run: |
