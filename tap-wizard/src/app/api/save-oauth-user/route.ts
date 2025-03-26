@@ -1,12 +1,12 @@
 // import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
 import { getCookie } from "cookies-next";
 import { TOKENS } from "@/constants/cookies";
 import { AUTH_API } from "@/constants/urls";
 //import { getSession } from "next-auth/react";
 import { authOptions } from "@/utils/next-auth-session-provider/auth";
 import { getServerSession } from "next-auth";
+import axiosInstance from "@/utils/http/axiosInstance";
 
 export async function GET (req: NextRequest) {
 	try {
@@ -37,7 +37,7 @@ export async function GET (req: NextRequest) {
 		}
 
 		// Make a request to your backend to save the OAuth user
-		const response = await axios.post(
+		const response = await axiosInstance.post(
 			AUTH_API.CONNECT_OAUTH_ACCOUNT,
 			{
 				provider: provider,

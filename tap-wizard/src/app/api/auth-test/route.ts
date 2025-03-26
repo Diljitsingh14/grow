@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
 import { getCookie } from "cookies-next";
 import { TOKENS } from "@/constants/cookies";
 import { AUTH_API } from "@/constants/urls";
+import axiosInstance from "@/utils/http/axiosInstance";
 
 export async function GET(req: NextRequest) {
 	try {
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 		}
 
 		// Hit the backend API with the token
-		const response = await axios.get(AUTH_API.PING, {
+		const response = await axiosInstance.get(AUTH_API.PING, {
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
 			},
