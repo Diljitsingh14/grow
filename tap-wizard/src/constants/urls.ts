@@ -1,36 +1,35 @@
 // Backend API endpoints
 
-// export const HOST = process.env.BACKEND_HOST;
-export const HOST = "http://localhost:8000";
+export const HOST = process.env.BACKEND_HOST;
 
 export const AUTH_API = {
-  LOGIN: `${HOST}/api/token/`,
-  REFRESH_TOKEN_URL: `${HOST}/api/token/refresh/`,
-  SOCIAL_PROFILE: `${HOST}/api/v1/social-profiles/`,
-  CONNECT_OAUTH_ACCOUNT: `${HOST}/api/v1/oauth-accounts/`,
-  PING: `${HOST}/api/v1/auth_test/`,
+  LOGIN: `/api/token/`,
+  REFRESH_TOKEN_URL: `/api/token/refresh/`,
+  SOCIAL_PROFILE: `/api/v1/social-profiles/`,
+  CONNECT_OAUTH_ACCOUNT: `/api/v1/oauth-accounts/`,
+  PING: `/api/v1/auth_test/`,
 };
 
 export const TURNX_API = {
-  MASTER_FORM_TEMPLATES: `${HOST}/api/turnx/master-form-templates/`,
-  FORM_TEMPLATES: `${HOST}/api/turnx/form-templates/`,
-  MASTER_FORM_THEMES: `${HOST}/api/turnx/master-form-themes/`,
+  MASTER_FORM_TEMPLATES: `/api/turnx/master-form-templates/`,
+  FORM_TEMPLATES: `/api/turnx/form-templates/`,
+  MASTER_FORM_THEMES: `/api/turnx/master-form-themes/`,
 
-  CONNECT_FORM: `${HOST}/api/turnx/connected-forms/`,
-  // UPDATE_CONNECTED_FORM: `${HOST}/api/turnx/connected-forms/`,
-  // DELETE_CONNECTED_FORM: `${HOST}/api/turnx/connected-forms/`,
-  // LIST_CONNECTED_FORM: `${HOST}/api/turnx/connected-forms/`,
+  CONNECT_FORM: `/api/turnx/connected-forms/`,
+  // UPDATE_CONNECTED_FORM: `/api/turnx/connected-forms/`,
+  // DELETE_CONNECTED_FORM: `/api/turnx/connected-forms/`,
+  // LIST_CONNECTED_FORM: `/api/turnx/connected-forms/`,
 
-  PUBLISH_FORM_VIEW: `${HOST}/api/turnx/connected-form/`,
+  PUBLISH_FORM_VIEW: `/api/turnx/connected-form/`,
 
-  LEAD_RESPONSE: `${HOST}/api/turnx/lead-responses/`,
+  LEAD_RESPONSE: `/api/turnx/lead-responses/`,
 
-  LEAD_CONFIRM: `${HOST}/api/turnx/lead-responses/#LEAD_ID#/consume-lead/`,
-  GOOGLE_CALENDAR: `${HOST}/api/turnx/google-calendar`,
+  LEAD_CONFIRM: `/api/turnx/lead-responses/#LEAD_ID#/consume-lead/`,
+  GOOGLE_CALENDAR: `/api/turnx/google-calendar`,
 };
 
 export const PRODUCT_API = {
-  PRODUCT_LIST: `${HOST}/api/sales/products/`,
-  PRODUCT_DETAIL: `${HOST}/api/sales/products/##ID##/`,
-  PRODUCT_REVIEW: `${HOST}/api/sales/products-reviews`,
+  PRODUCT_LIST: `/api/sales/products/`,
+  PRODUCT_DETAIL: `/api/sales/products/##ID##/`,
+  PRODUCT_REVIEW: `/api/sales/products-reviews`,
 };

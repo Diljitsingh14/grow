@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import axios from "axios";
+import axiosInstance from "@/utils/http/axiosInstance";
 import { AUTH_API } from "@/constants/urls";
 import { TOKENS } from "@/constants/cookies";
 import { setCookie } from "cookies-next";
@@ -32,8 +32,9 @@ const Login: React.FC = () => {
 
     if (loginData.password && loginData.username) {
       const url = `${AUTH_API.LOGIN}`;
+      console.log("##URL#", url);
       try {
-        const res = await axios.post(url, loginData);
+        const res = await axiosInstance.post(url, loginData);
         const { access, refresh } = res.data;
 
         // Set OAuth token in cookies
